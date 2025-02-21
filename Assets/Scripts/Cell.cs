@@ -8,29 +8,14 @@ public class Cell : MonoBehaviour
     [SerializeField] private GameObject _selected;
 
     private CellType _type;
+    private Vector2Int _index;
 
-    private bool _isHighlighted;
-
-    public void Init(CellData data)
+    public Vector2Int Index { get { return _index; } }
+    public GameObject Selected { get { return _selected; } }
+    public void Init(CellData data, Vector2Int index)
     {
         _type = data.Type;
-        _isHighlighted = false;
-    }
-
-    public void Highlight()
-    {
-        _isHighlighted = _isHighlighted ? false : true;
-        _selected.SetActive(_isHighlighted);
-    }
-
-    private void OnMouseEnter()
-    {
-        Highlight();
-    }
-
-    private void OnMouseExit()
-    {
-        Highlight();
+        _index = index;
     }
 }
 

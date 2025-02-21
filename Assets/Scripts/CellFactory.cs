@@ -12,7 +12,7 @@ public class CellFactory
         _cellVariants = cellVariants;
     }
 
-    public Cell CreateCell(CellType cellType)
+    public Cell CreateCell(CellType cellType, Vector2Int index)
     {
         var cellVariantData = GetCellData(cellType);
 
@@ -22,7 +22,7 @@ public class CellFactory
         }
 
         var cell = GameObject.Instantiate(cellVariantData.Prefab);
-        cell.Init(cellVariantData);
+        cell.Init(cellVariantData, index);
         return cell;
     }
 

@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: CellsGridConfig
   m_EditorClassIdentifier: 
   _gridSize: {x: 3, y: 3}
-  _cellSize: {x: 1, y: 1, z: 1}
-  _rightBasis: {x: 1.732, y: 1}
-  _leftBasis: {x: 1.732, y: 1}
+  _cellSize: {x: 64, y: 32}
   _cellDatas:
   - {fileID: 11400000, guid: 2b7028eea91ab9a4ba10558f99f39955, type: 2}

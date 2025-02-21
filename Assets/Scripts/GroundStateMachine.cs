@@ -34,7 +34,7 @@ public class GroundStateMachine : MonoBehaviour
 
         _groundStates = new List<IState>()
         {
-            new MiningState(),
+            new MiningState(_cellsGrid),
             new BuildingState()
         };
 

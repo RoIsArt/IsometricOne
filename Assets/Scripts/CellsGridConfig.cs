@@ -8,30 +8,27 @@ public class CellsGridConfig : ScriptableObject
     [Space]
     [Header("Grid config")]
     [SerializeField] private Vector2Int _gridSize;
-
-    [Space]
-    [Header("Cell config")]
-    [SerializeField] private Vector3 _cellSize;
-    [SerializeField] private Vector2 _rightBasis;
-    [SerializeField] private Vector2 _leftBasis;
+    [SerializeField] private Vector2Int _cellSize;
 
     [Space]
     [Header("Cell datas")]
     [SerializeField] private List<CellData> _cellDatas;
 
-    public Vector3 CellSize { get { return _cellSize; } }
+    public Vector2Int CellSize { get { return _cellSize; } }
+    public int CellWidth { get { return _cellSize.x/2; } }
+    public int CellHeight { get { return _cellSize.y/2; } }
     public Vector2 RightBasis
     {
         get
         {
-            return new Vector2(_cellSize.x * _rightBasis.x, -_cellSize.y * _rightBasis.y);
+            return new Vector2(CellWidth, CellHeight);
         }
     }
     public Vector2 LeftBasis
     {
         get
         {
-            return new Vector2(-_cellSize.x * _leftBasis.x, -_cellSize.y * _leftBasis.y);
+            return new Vector2(-CellWidth, CellHeight);
         }
     }
     public Vector2Int GridSize { get { return _gridSize; } }
