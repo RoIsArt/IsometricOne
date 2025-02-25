@@ -15,56 +15,51 @@ public class Highlighter
 
     public void HighlightCell()
     {
-        var mousePosition = GetMousePosition();
-        var cellIndex = _cellsGrid.GetIndexFromPixel(mousePosition);  
-        bool outOfRange = _cellsGrid.CheckOutOfRangeIndex(cellIndex);
+        Vector2 mousePosition = GetMousePosition();
+        Vector2Int cellIndex = _cellsGrid.GetIndexFromPixel(mousePosition);  
+        bool isOutOfRange = _cellsGrid.CheckOutOfRangeIndex(cellIndex);
 
-        if (!outOfRange)
+        if (!isOutOfRange)
         {
-            var cell = _cellsGrid[cellIndex];
+            Cell pointedCell = _cellsGrid[cellIndex];
 
             if (_highlightedCell != null)
             {
-                if (cell.Index != _highlightedCell.Index)
+                if (pointedCell.Index != _highlightedCell.Index)
                 {
                     ChangeSelectedFrameActivity();
-                    _highlightedCell = cell;
+                    _highlightedCell = pointedCell;
                     ChangeSelectedFrameActivity();
                 }
             }
             else
             {
-                _highlightedCell = cell;
+                _highlightedCell = pointedCell;
                 ChangeSelectedFrameActivity();
             }
         }
-        else
+        else if(_highlightedCell != null)
         {
-            ClearHighLight();
+            ClearHighlighting();
         }        
     }
 
     private Vector2 GetMousePosition()
     {
-        var mouseScreenPosition = Input.mousePosition;
-        var inGameMousePosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
-        return new Vector2(inGameMousePosition.x, inGameMousePosition.y);
+        Vector3 mouseScreenPosition = Input.mousePosition;
+        Vector3 inGameMousePosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
+        return (Vector2)inGameMousePosition;
     }
 
     private void ChangeSelectedFrameActivity()
     {
-        var selectedFrame = _highlightedCell?.Selected;
-
-        if (selectedFrame != null)
-        {
-            var active = selectedFrame.activeSelf ? false : true;
-            selectedFrame.SetActive(active);
-        }
+        bool isActive = !_highlightedCell.Selected.activeSelf;
+        _highlightedCell.Selected.SetActive(isActive);
     }
 
-    private void ClearHighLight()
+    private void ClearHighlighting()
     {
-        ChangeSelectedFrameActivity();
+        _highlightedCell.Selected.SetActive(false);
         _highlightedCell = null;
     }
 }

@@ -18,7 +18,19 @@ public class GridGenerator
         for (int x = 0; x < _cellsGrid.Config.GridSize.x; x++)
             for (int y = 0; y < _cellsGrid.Config.GridSize.y; y++)
             {
-                var cell = _cellFactory.CreateCell(CellType.EMPTY, new Vector2Int(x,y));
+                CellType type;
+
+                if(x == _cellsGrid.Config.GridSize.x - 1 &&
+                    y == _cellsGrid.Config.GridSize.y - 1)
+                {
+                    type = CellType.SOURCE;  
+                }
+                else
+                {
+                    type = CellType.EMPTY;
+                }
+
+                Cell cell = _cellFactory.CreateCell(type, new Vector2Int(x, y));
                 PlacedOnPosition(cell, new Vector2Int(x, y));
             }
     }

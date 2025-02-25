@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class Bootstrap : MonoBehaviour
 {
-    [SerializeField] private GroundStateMachine _ground;
+    [SerializeField] private GroundStateMachine _groundStateMachine;
 
     private void Awake()
     {
-        _ground.Init();
+        _groundStateMachine.Init();
     }
 }

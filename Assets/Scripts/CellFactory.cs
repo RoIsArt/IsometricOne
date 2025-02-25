@@ -14,14 +14,14 @@ public class CellFactory
 
     public Cell CreateCell(CellType cellType, Vector2Int index)
     {
-        var cellVariantData = GetCellData(cellType);
+        CellData cellVariantData = GetCellData(cellType);
 
         if(cellVariantData == null)
         {
             throw new ArgumentNullException("Cell data is not found");
         }
 
-        var cell = GameObject.Instantiate(cellVariantData.Prefab);
+        Cell cell = GameObject.Instantiate(cellVariantData.Prefab);
         cell.Init(cellVariantData, index);
         return cell;
     }

@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24f3416a4631a764099d27efde387b2d, type: 3}
+  m_Name: RoadSECellData
+  m_EditorClassIdentifier: 
+  _cellType: 4
+  _cellPrefab: {fileID: 3593644504756854348, guid: ab120164d1c26474088cf74a03bb9c9e, type: 3}

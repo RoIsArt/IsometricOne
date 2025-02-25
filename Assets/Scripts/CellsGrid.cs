@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CellsGrid : MonoBehaviour
@@ -15,6 +13,7 @@ public class CellsGrid : MonoBehaviour
     {
         get => _cells[index.x, index.y];
     }
+
     public void Init()
     {
         _cells = new Cell[_config.GridSize.x, _config.GridSize.y];
@@ -22,9 +21,9 @@ public class CellsGrid : MonoBehaviour
 
     public void PlacedCellOnPosition(Cell cell, Vector2Int index)
     {
-        bool outOfRange = CheckOutOfRangeIndex(index);
+        bool isOutOfRange = CheckOutOfRangeIndex(index);
 
-        if (outOfRange)
+        if (isOutOfRange)
         {
             throw new ArgumentOutOfRangeException("Grid not contain this position");
         }
@@ -45,8 +44,9 @@ public class CellsGrid : MonoBehaviour
         var xIndex = Mathf.RoundToInt((pixel.x /_config.CellWidth + pixel.y /_config.CellHeight)/2);
         var yIndex = Mathf.RoundToInt((pixel.y /_config.CellHeight - pixel.x /_config.CellWidth)/2);
 
-        var outOfRange = CheckOutOfRangeIndex(new Vector2Int(xIndex, yIndex));
-        if (outOfRange)
+        var isOutOfRange = CheckOutOfRangeIndex(new Vector2Int(xIndex, yIndex));
+
+        if (isOutOfRange)
         {
             return new Vector2Int(-1, -1);
         }

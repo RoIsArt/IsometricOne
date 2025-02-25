@@ -12,17 +12,12 @@ public class GroundStateMachine : MonoBehaviour
 
     private GridGenerator _gridGenerator;
     private CellFactory _cellFactory;
-
     private List<IState> _groundStates;
-
     private IState _currentState;
 
     private void Update()
     {
-        if (_currentState != null)
-        {
-            _currentState.Update();
-        }
+        _currentState?.Update();
     }
 
     public void Init()
@@ -44,15 +39,14 @@ public class GroundStateMachine : MonoBehaviour
 
     public void SetState(IState nextState)
     {
-        var stateContain = _groundStates.Contains(nextState);
-        if (stateContain == false)
+        bool isStateContain = _groundStates.Contains(nextState);
+
+        if (isStateContain == false)
         {
             throw new Exception("State is not contains");
         }
 
-        if (_currentState != null)
-            _currentState.Exit();
-
+        _currentState?.Exit();
         _currentState = nextState;
         _currentState.Enter();
     }
