@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class CellsGrid : MonoBehaviour
+public class CellsGrid : MonoBehaviour, IService
 {
     [SerializeField] private CellsGridConfig _config;
     private Cell[,] _cells;

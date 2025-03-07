@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class MiningState : IState
 {
-    private Highlighter _highlighter;
+    private Pointer _pointer;
 
-    public MiningState(CellsGrid cellsGrid)
+    public MiningState(Pointer pointer)
     {
-        _highlighter = new Highlighter(cellsGrid);
+        _pointer = pointer;
     }
 
     public void Enter()
@@ -24,6 +24,6 @@ public class MiningState : IState
 
     public void Update()
     {
-        _highlighter.HighlightCell();
+        _pointer.PointToCell();
     }
 }

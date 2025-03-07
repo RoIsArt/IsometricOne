@@ -6,10 +6,9 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class GroundStateMachine : MonoBehaviour
+public class GroundStateMachine : MonoBehaviour, IService
 {
-    [SerializeField] private CellsGrid _cellsGrid;
-
+    private CellsGrid _cellsGrid;
     private GridGenerator _gridGenerator;
     private CellFactory _cellFactory;
     private List<IState> _groundStates;
@@ -22,15 +21,20 @@ public class GroundStateMachine : MonoBehaviour
 
     public void Init()
     {
-        _cellsGrid.Init();
-        _cellFactory = new CellFactory(_cellsGrid.Config.CellDatas);
+        _cellsGrid = ServiceLocator.Instance.Get<CellsGrid>();
+        _cellFactory = ServiceLocator.Instance.Get<CellFactory>();
         _gridGenerator = new GridGenerator(_cellsGrid, _cellFactory);
         _gridGenerator.Generate();
 
+        var pointer = ServiceLocator.Instance.Get<Pointer>();
+        var highlighter = ServiceLocator.Instance.Get<Highlighter>();
+        var builder = ServiceLocator.Instance.Get<Builder>();
+
+
         _groundStates = new List<IState>()
         {
-            new MiningState(_cellsGrid),
-            new BuildingState()
+            new MiningState(pointer),
+            new BuildingState(builder, highlighter)
         };
 
         var startState = _groundStates.FirstOrDefault(x => x.GetType() == typeof(MiningState));

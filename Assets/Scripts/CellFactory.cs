@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class CellFactory
+public class CellFactory : IService
 {
     private List<CellData> _cellVariants;
 
-    public CellFactory(List<CellData> cellVariants)
+    public void Init()
     {
-        _cellVariants = cellVariants;
+        var cellsGrid = ServiceLocator.Instance.Get<CellsGrid>();
+        _cellVariants = cellsGrid.Config.CellDatas;
     }
 
     public Cell CreateCell(CellType cellType, Vector2Int index)

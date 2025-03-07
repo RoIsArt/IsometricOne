@@ -12,6 +12,7 @@ public class Cell : MonoBehaviour
 
     public Vector2Int Index { get { return _index; } }
     public GameObject Selected { get { return _selected; } }
+    public CellType Type { get { return _type; } }
     public void Init(CellData data, Vector2Int index)
     {
         _type = data.Type;

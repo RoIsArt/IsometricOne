@@ -1,65 +1,53 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class Highlighter
+public class Highlighter : IService, IDisposable
 {
-    private CellsGrid _cellsGrid;
-    private Cell _highlightedCell;
+    private Cell _pointedCell;
 
-    public Highlighter(CellsGrid cellsGrid)
+    private EventBus _eventBus;
+
+    public void Init()
     {
-        _cellsGrid = cellsGrid;
+        _eventBus = ServiceLocator.Instance.Get<EventBus>();
+        _eventBus.Subscribe<OnCellPointedEvent>(SetPointedCell);
     }
+
+    private void SetPointedCell(OnCellPointedEvent pointedCell)
+    {
+        if (pointedCell.Cell == null)
+        {
+            ClearHighlighting();
+            _pointedCell = null;
+        }
+        else
+        {
+            HighlightCell();
+            _pointedCell = pointedCell.Cell;
+            HighlightCell();
+        }
+    }
+
 
     public void HighlightCell()
     {
-        Vector2 mousePosition = GetMousePosition();
-        Vector2Int cellIndex = _cellsGrid.GetIndexFromPixel(mousePosition);  
-        bool isOutOfRange = _cellsGrid.CheckOutOfRangeIndex(cellIndex);
-
-        if (!isOutOfRange)
+        if (_pointedCell != null)
         {
-            Cell pointedCell = _cellsGrid[cellIndex];
-
-            if (_highlightedCell != null)
-            {
-                if (pointedCell.Index != _highlightedCell.Index)
-                {
-                    ChangeSelectedFrameActivity();
-                    _highlightedCell = pointedCell;
-                    ChangeSelectedFrameActivity();
-                }
-            }
-            else
-            {
-                _highlightedCell = pointedCell;
-                ChangeSelectedFrameActivity();
-            }
-        }
-        else if(_highlightedCell != null)
-        {
-            ClearHighlighting();
-        }        
+            bool isActive = !_pointedCell.Selected.activeSelf;
+            _pointedCell.Selected.SetActive(isActive);
+        }      
     }
 
-    private Vector2 GetMousePosition()
+    public void ClearHighlighting()
     {
-        Vector3 mouseScreenPosition = Input.mousePosition;
-        Vector3 inGameMousePosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
-        return (Vector2)inGameMousePosition;
+        _pointedCell?.Selected.SetActive(false);
     }
 
-    private void ChangeSelectedFrameActivity()
+    public void Dispose()
     {
-        bool isActive = !_highlightedCell.Selected.activeSelf;
-        _highlightedCell.Selected.SetActive(isActive);
-    }
-
-    private void ClearHighlighting()
-    {
-        _highlightedCell.Selected.SetActive(false);
-        _highlightedCell = null;
+        _eventBus.Unsubscribe<OnCellPointedEvent>(SetPointedCell);
     }
 }
