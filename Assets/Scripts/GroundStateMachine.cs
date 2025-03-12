@@ -3,56 +3,51 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using Zenject;
 
-public class GroundStateMachine : MonoBehaviour, IService
+public class GroundStateMachine : MonoBehaviour, IDisposable
 {
     private CellsGrid _cellsGrid;
     private GridGenerator _gridGenerator;
     private CellFactory _cellFactory;
-    private List<IState> _groundStates;
     private IState _currentState;
+    private EventBus _eventBus;
 
     private void Update()
     {
         _currentState?.Update();
     }
 
-    public void Init()
+    [Inject]
+    public void Construct(CellsGrid cellsGrid, 
+                        CellFactory cellFactory,  
+                        EventBus eventBus,
+                        MiningState startState)
     {
-        _cellsGrid = ServiceLocator.Instance.Get<CellsGrid>();
-        _cellFactory = ServiceLocator.Instance.Get<CellFactory>();
+        _cellsGrid = cellsGrid;
+        _cellFactory = cellFactory;
+        _eventBus = eventBus;
+
         _gridGenerator = new GridGenerator(_cellsGrid, _cellFactory);
         _gridGenerator.Generate();
 
-        var pointer = ServiceLocator.Instance.Get<Pointer>();
-        var highlighter = ServiceLocator.Instance.Get<Highlighter>();
-        var builder = ServiceLocator.Instance.Get<Builder>();
-
-
-        _groundStates = new List<IState>()
-        {
-            new MiningState(pointer),
-            new BuildingState(builder, highlighter)
-        };
-
-        var startState = _groundStates.FirstOrDefault(x => x.GetType() == typeof(MiningState));
-        SetState(startState);
+        _eventBus.Subscribe<OnChangeGroundStateEvent>(SetState);
+        _eventBus.Invoke<OnChangeGroundStateEvent>(new OnChangeGroundStateEvent(startState));
     }
 
-    public void SetState(IState nextState)
+    public void SetState(OnChangeGroundStateEvent changeGroundStateEvent)
     {
-        bool isStateContain = _groundStates.Contains(nextState);
-
-        if (isStateContain == false)
-        {
-            throw new Exception("State is not contains");
-        }
-
         _currentState?.Exit();
-        _currentState = nextState;
+        _currentState = changeGroundStateEvent.State;
         _currentState.Enter();
+    }
+
+    public void Dispose()
+    {
+        _eventBus.Unsubscribe<OnChangeGroundStateEvent>(SetState);
     }
 }
 

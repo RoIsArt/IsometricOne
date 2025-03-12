@@ -1,20 +1,20 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class Pointer : IService
+public class Pointer
 {
     private CellsGrid _cellsGrid;
     private Cell _pointedCell;
 
     private EventBus _eventBus;
 
-    public void Init()
+    public Pointer(CellsGrid cellsGrid, EventBus eventBus)
     {
-        _cellsGrid = ServiceLocator.Instance.Get<CellsGrid>();
-        _eventBus = ServiceLocator.Instance.Get<EventBus>();
-        _pointedCell = null;
+        _cellsGrid = cellsGrid;
+        _eventBus = eventBus;
     }
 
     public void PointToCell()
@@ -23,26 +23,24 @@ public class Pointer : IService
         Vector2Int cellIndex = _cellsGrid.GetIndexFromPixel(mousePosition);
         bool isOutOfRange = _cellsGrid.CheckOutOfRangeIndex(cellIndex);
 
-        if (!isOutOfRange)
-        {
-            var cell = _cellsGrid[cellIndex];
-
-            if (_pointedCell != cell)
-            {
-                SetPointedCell(new OnCellPointedEvent(cell));
-                return;
-            }                 
-        }
-        else
+        if (isOutOfRange)
         {
             SetPointedCell(new OnCellPointedEvent(null));
+            return;
+        }
+
+        var cell = _cellsGrid[cellIndex];
+
+        if (_pointedCell != cell)
+        {
+            SetPointedCell(new OnCellPointedEvent(cell));
         }
     }
 
     private void SetPointedCell(OnCellPointedEvent pointedEvent)
     {
         _pointedCell = pointedEvent.Cell;
-        _eventBus.Invoke(pointedEvent);
+        _eventBus.Invoke<OnCellPointedEvent>(pointedEvent);
     }
 
     private Vector2 GetMousePosition()

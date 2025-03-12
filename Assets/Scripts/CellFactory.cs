@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zenject;
 
-public class CellFactory : IService
+public class CellFactory
 {
-    private List<CellData> _cellVariants;
+    private List<CellData> _cellDatas;
 
-    public void Init()
+    public CellFactory(CellsGridConfig cellsGridConfig)
     {
-        var cellsGrid = ServiceLocator.Instance.Get<CellsGrid>();
-        _cellVariants = cellsGrid.Config.CellDatas;
+        _cellDatas = cellsGridConfig.CellDatas;
     }
 
     public Cell CreateCell(CellType cellType, Vector2Int index)
@@ -23,12 +23,12 @@ public class CellFactory : IService
         }
 
         Cell cell = GameObject.Instantiate(cellVariantData.Prefab);
-        cell.Init(cellVariantData, index);
+        cell.Construct(cellVariantData, index);
         return cell;
     }
 
     private CellData GetCellData(CellType cellType)
     {
-        return _cellVariants.FirstOrDefault(x => x.Type == cellType);
+        return _cellDatas.FirstOrDefault(x => x.Type == cellType);
     }
 }

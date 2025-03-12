@@ -1,9 +1,10 @@
 using System;
 using UnityEngine;
+using Zenject;
 
-public class CellsGrid : MonoBehaviour, IService
+public class CellsGrid : MonoBehaviour
 {
-    [SerializeField] private CellsGridConfig _config;
+    private CellsGridConfig _config;
     private Cell[,] _cells;
 
     public CellsGridConfig Config { get { return _config; } }
@@ -14,9 +15,22 @@ public class CellsGrid : MonoBehaviour, IService
         get => _cells[index.x, index.y];
     }
 
-    public void Init()
+    [Inject]
+    public void Construct(CellsGridConfig cellsGridConfig)
     {
+        _config = cellsGridConfig;
         _cells = new Cell[_config.GridSize.x, _config.GridSize.y];
+    }
+
+    public void AddCellInGrid(Cell cellToAdd, Vector2Int index)
+    {
+        var cell = _cells[index.x, index.y];
+        if (cell.Data.Type == CellType.EMPTY)
+        {
+            GameObject.Destroy(cell.gameObject);
+            _cells[index.x, index.y] = cellToAdd;
+            PlacedCellOnPosition(cellToAdd, index);
+        }
     }
 
     public void PlacedCellOnPosition(Cell cell, Vector2Int index)

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class EventBus : IService
+public class EventBus
 {
     private Dictionary<string, List<Callback>> _callbacksForEvent = new Dictionary<string, List<Callback>>();
 

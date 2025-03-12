@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cellType: 0
   _cellPrefab: {fileID: 4478116864074924575, guid: d10be30e0c1f8e3468cd658888fa9f83, type: 3}
+  _cellSprite: {fileID: -1005345640, guid: 7bf9981770ee09b47a722da421ddbb22, type: 3}
