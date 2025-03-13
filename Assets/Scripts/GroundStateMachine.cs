@@ -13,8 +13,9 @@ public class GroundStateMachine : MonoBehaviour, IDisposable
     private CellsGrid _cellsGrid;
     private GridGenerator _gridGenerator;
     private CellFactory _cellFactory;
-    private IState _currentState;
     private EventBus _eventBus;
+
+    private IState _currentState;
 
     private void Update()
     {
@@ -35,7 +36,7 @@ public class GroundStateMachine : MonoBehaviour, IDisposable
         _gridGenerator.Generate();
 
         _eventBus.Subscribe<OnChangeGroundStateEvent>(SetState);
-        _eventBus.Invoke<OnChangeGroundStateEvent>(new OnChangeGroundStateEvent(startState));
+        _eventBus.Invoke(new OnChangeGroundStateEvent(startState));
     }
 
     public void SetState(OnChangeGroundStateEvent changeGroundStateEvent)

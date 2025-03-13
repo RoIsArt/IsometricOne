@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class Highlighter : IDisposable
 {
-    private CellsGrid _cellsGrid;
-    private EventBus _eventBus;
+    private readonly CellsGrid _cellsGrid;
+    private readonly EventBus _eventBus;
 
     private Cell _highlitedCell;
     private CellData _cellForBuild;
@@ -40,8 +40,8 @@ public class Highlighter : IDisposable
 
     public void HighlightForMine(Cell cell)
     {
-        _highlitedCell?.Selected.SetActive(false);
-        cell?.Selected.SetActive(true);
+        _highlitedCell?.Selected?.SetActive(false);
+        cell?.Selected?.SetActive(true);
         _highlitedCell = cell;
     }
 
@@ -66,5 +66,16 @@ public class Highlighter : IDisposable
     private void SetCellForBuild(OnStartBuildingCellEvent onStartBuildingCellEvent)
     {
         _cellForBuild = onStartBuildingCellEvent.CellData;
+    }
+
+    public void ClearAllHighlighting()
+    {
+        foreach (var cell in _cellsGrid.Cells)
+        {
+            if (cell.Selected.activeSelf)
+            {
+                cell.Selected.SetActive(false);
+            }
+        }
     }
 }

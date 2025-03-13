@@ -908,7 +908,7 @@ GameObject:
   - component: {fileID: 1297065610}
   - component: {fileID: 1297065609}
   m_Layer: 0
-  m_Name: Ground
+  m_Name: GroundStateMachine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

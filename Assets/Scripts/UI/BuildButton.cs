@@ -9,8 +9,8 @@ public class BuildButton : MonoBehaviour, IDisposable
     [SerializeField] private Button _button;
     [SerializeField] private CellData _cellForBuild;
 
-    private EventBus _eventBus;
     private BuildingState _buildingState;
+    private EventBus _eventBus;
 
     [Inject]
     public void Construct(EventBus eventBus, BuildingState buildingState)
@@ -23,8 +23,8 @@ public class BuildButton : MonoBehaviour, IDisposable
 
     public void StartBuilding()    
     {
-        _eventBus.Invoke<OnStartBuildingCellEvent>(new OnStartBuildingCellEvent(_cellForBuild));
-        _eventBus.Invoke<OnChangeGroundStateEvent>(new OnChangeGroundStateEvent(_buildingState));   
+        _eventBus.Invoke(new OnStartBuildingCellEvent(_cellForBuild));
+        _eventBus.Invoke(new OnChangeGroundStateEvent(_buildingState));   
     }
 
     public void Dispose()

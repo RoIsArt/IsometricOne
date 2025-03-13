@@ -6,10 +6,10 @@ using UnityEngine;
 
 public class Pointer
 {
-    private CellsGrid _cellsGrid;
-    private Cell _pointedCell;
+    private readonly CellsGrid _cellsGrid;
+    private readonly EventBus _eventBus;
 
-    private EventBus _eventBus;
+    private Cell _pointedCell;
 
     public Pointer(CellsGrid cellsGrid, EventBus eventBus)
     {
@@ -40,7 +40,7 @@ public class Pointer
     private void SetPointedCell(OnCellPointedEvent pointedEvent)
     {
         _pointedCell = pointedEvent.Cell;
-        _eventBus.Invoke<OnCellPointedEvent>(pointedEvent);
+        _eventBus.Invoke(pointedEvent);
     }
 
     private Vector2 GetMousePosition()
