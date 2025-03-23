@@ -8,6 +8,7 @@ public class MiningState : IState
 {
     private Pointer _pointer;
     private Highlighter _highlighter;
+    private Miner _miner;
 
     public MiningState(Pointer pointer, Highlighter highlighter)
     {
@@ -19,6 +20,8 @@ public class MiningState : IState
     {
         Action<Cell> action = _highlighter.HighlightForMine;
         _highlighter.SetHighlightMethod(action);
+        Coroutines.Instance.StartCoroutine(_miner.Mine());
+
     }
 
     public void Update()

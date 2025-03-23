@@ -9,8 +9,8 @@ public class Highlighter : IDisposable
     private readonly CellsGrid _cellsGrid;
     private readonly EventBus _eventBus;
 
-    private Cell _highlitedCell;
-    private CellData _cellForBuild;
+    private Cell _highlightedCell;
+    private CellData _cellDataForBuild;
 
     private Action<Cell> _highlight;
 
@@ -40,16 +40,21 @@ public class Highlighter : IDisposable
 
     public void HighlightForMine(Cell cell)
     {
-        _highlitedCell?.Selected?.SetActive(false);
-        cell?.Selected?.SetActive(true);
-        _highlitedCell = cell;
+        _highlightedCell?.Selected.SetActive(false);        
+        cell?.Selected.SetActive(true);
+        _highlightedCell = cell;
     }
 
     public void HighlightForBuild(Cell cell)
     {
-        _highlitedCell?.SetSprite(_highlitedCell.Data.Sprite);
-        cell?.SetSprite(_cellForBuild.Sprite);
-        _highlitedCell = cell;
+        _highlightedCell?.SetSprite(_highlightedCell.Data.Sprite);
+
+        if (cell?.Data.Type == CellType.EMPTY)
+        {
+            cell.SetSprite(_cellDataForBuild.Sprite);
+        }
+
+        _highlightedCell = cell;
     }
 
     public void Dispose()
@@ -65,7 +70,7 @@ public class Highlighter : IDisposable
 
     private void SetCellForBuild(OnStartBuildingCellEvent onStartBuildingCellEvent)
     {
-        _cellForBuild = onStartBuildingCellEvent.CellData;
+        _cellDataForBuild = onStartBuildingCellEvent.CellData;
     }
 
     public void ClearAllHighlighting()

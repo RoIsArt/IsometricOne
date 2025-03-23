@@ -17,7 +17,7 @@ public class MainSceneInstaller : MonoInstaller
         Container.Bind<CellFactory>().AsSingle().NonLazy();
         Container.Bind<Pointer>().AsSingle().NonLazy(); 
         Container.BindInterfacesAndSelfTo<Highlighter>().AsSingle().NonLazy();
-        Container.Bind<Builder>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<Builder>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<GroundStateMachine>().FromInstance(_groundStateMachine).AsSingle().NonLazy();
         Container.Bind<BuildingState>().AsSingle().NonLazy();
         Container.Bind<MiningState>().AsSingle().NonLazy();

@@ -31,13 +31,13 @@ public class GridGenerator
                 }
 
                 Cell cell = _cellFactory.CreateCell(type, new Vector2Int(x, y));
-                PlacedOnPosition(cell, new Vector2Int(x, y));
+                PlacedOnPosition(cell);
             }
     }
 
-    private void PlacedOnPosition(Cell cell, Vector2Int positionInArray)
+    private void PlacedOnPosition(Cell cell)
     {
-        _cellsGrid.PlacedCellOnPosition(cell, positionInArray);
+        _cellsGrid.PlacedCellOnPosition(cell);
     }
 }
 

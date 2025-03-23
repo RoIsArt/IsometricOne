@@ -8,8 +8,10 @@ public class CellData : ScriptableObject
     [SerializeField] private CellType _cellType;
     [SerializeField] private Cell _cellPrefab;
     [SerializeField] private Sprite _cellSprite;
+    [SerializeField] private int miningPerSecond;
 
     public CellType Type { get { return _cellType; } }
     public Cell Prefab { get { return _cellPrefab; } }
     public Sprite Sprite { get { return _cellSprite; } }
+    public int MiningPerSecond { get {  return miningPerSecond; } }
 }

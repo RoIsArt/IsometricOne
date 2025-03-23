@@ -15,3 +15,4 @@ MonoBehaviour:
   _cellType: 2
   _cellPrefab: {fileID: 1530416882532076831, guid: 1db45288771a9d74f8a502ff541e33a6, type: 3}
   _cellSprite: {fileID: 1149048609, guid: 7bf9981770ee09b47a722da421ddbb22, type: 3}
+  miningPerSecond: 1

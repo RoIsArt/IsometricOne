@@ -22,29 +22,30 @@ public class CellsGrid : MonoBehaviour
         _cells = new Cell[_config.GridSize.x, _config.GridSize.y];
     }
 
-    public void AddCellInGrid(Cell cellToAdd, Vector2Int index)
+    public void AddCellInGrid(Cell cellToAdd)
     {
-        var cell = _cells[index.x, index.y];
-        if (cell.Data.Type == CellType.EMPTY)
+        var index = cellToAdd.Index;
+        var cellOnGrid = _cells[index.x, index.y];
+
+        if (cellOnGrid.Data.Type == CellType.EMPTY)
         {
-            GameObject.Destroy(cell.gameObject);
+            GameObject.Destroy(cellOnGrid.gameObject);
             _cells[index.x, index.y] = cellToAdd;
-            PlacedCellOnPosition(cellToAdd, index);
+            PlacedCellOnPosition(cellToAdd);
         }
     }
 
-    public void PlacedCellOnPosition(Cell cell, Vector2Int index)
+    public void PlacedCellOnPosition(Cell cell)
     {
-        bool isOutOfRange = CheckOutOfRangeIndex(index);
-
-        if (isOutOfRange)
+        var index = cell.Index;
+        if (CheckOutOfRangeIndex(index))
         {
             throw new ArgumentOutOfRangeException("Grid not contain this position");
         }
 
         _cells[index.x, index.y] = cell;
-        cell.transform.parent = this.transform;
-        cell.transform.position = GetCellPosition(index);
+        cell.gameObject.transform.parent = this.gameObject.transform;
+        cell.gameObject.transform.position = GetCellPosition(index);
     }
 
     public bool CheckOutOfRangeIndex(Vector2Int index)
