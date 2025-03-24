@@ -9,10 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24f3416a4631a764099d27efde387b2d, type: 3}
+  m_Script: {fileID: 11500000, guid: 8d9ed6d348378ab4baeda196027a08f6, type: 3}
   m_Name: RoadNECellData
   m_EditorClassIdentifier: 
   _cellType: 2
   _cellPrefab: {fileID: 1530416882532076831, guid: 1db45288771a9d74f8a502ff541e33a6, type: 3}
   _cellSprite: {fileID: 1149048609, guid: 7bf9981770ee09b47a722da421ddbb22, type: 3}
+  _connectSides: 0000000002000000
   miningPerSecond: 1

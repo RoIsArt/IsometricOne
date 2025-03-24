@@ -6,9 +6,11 @@ public class CellsGrid : MonoBehaviour
 {
     private CellsGridConfig _config;
     private Cell[,] _cells;
+    private Vector2Int _sourcePosition;
 
     public CellsGridConfig Config { get { return _config; } }
     public Cell[,] Cells { get { return _cells; } }
+    public Vector2Int SourcePosition { get { return _sourcePosition; } }
 
     public Cell this[Vector2Int index]
     {
@@ -20,6 +22,7 @@ public class CellsGrid : MonoBehaviour
     {
         _config = cellsGridConfig;
         _cells = new Cell[_config.GridSize.x, _config.GridSize.y];
+        _sourcePosition = _config.SourcePosition;
     }
 
     public void AddCellInGrid(Cell cellToAdd)

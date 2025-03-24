@@ -5,9 +5,11 @@ public class Miner
 {
     private Route _route;
     private Wallet _wallet;
-    public Miner()
+
+    public Miner(CellsGrid cellsGrid)
     {
-        _route = new Route(); 
+        var sourceCell = cellsGrid[cellsGrid.SourcePosition];
+        _route = new Route(sourceCell); 
         _wallet = new Wallet();
     }
     

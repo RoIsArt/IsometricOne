@@ -9,6 +9,7 @@ public class CellsGridConfig : ScriptableObject
     [Header("Grid config")]
     [SerializeField] private Vector2Int _gridSize;
     [SerializeField] private Vector2Int _cellSize;
+    [SerializeField] private Vector2Int _sourcePosition;
 
     [Space]
     [Header("Cell datas")]
@@ -33,4 +34,5 @@ public class CellsGridConfig : ScriptableObject
     }
     public Vector2Int GridSize { get { return _gridSize; } }
     public List<CellData> CellDatas { get { return _cellDatas; } }
+    public Vector2Int SourcePosition { get { return _sourcePosition; } }
 }

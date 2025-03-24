@@ -1,48 +1,44 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Route
 {
-    private Stack<Cell> _cells;
+    private readonly List<Cell> _cells;
     private Property<int> _miningPerSecond;
+    private bool _isReady;
 
-    public Route()
+    public Route(Cell firstCell)
     {
-        _cells = new Stack<Cell>();
-        _miningPerSecond = new Property<int>();
+        _cells = new();
+        _miningPerSecond = new Property<int>(0);
+        _isReady = false;
+
+        _cells.Add(firstCell);
     }
 
     public Property<int> MiningPerSecond { get { return _miningPerSecond; } }
 
     public void Add(Cell cell)
     {
-        _cells.Push(cell);
-        _miningPerSecond.Value += cell.Data.MiningPerSecond;
+        _cells.Add(cell);
+        CheckRoute();
+        //_miningPerSecond.Value += cell.Data.MiningPerSecond;
     }
-
     public void Remove(Cell cell)
     {
-        if(Contain(cell))
+        if(_cells.Contains(cell))
         {
-            var popCell = _cells.Pop();
-            _miningPerSecond.Value -= popCell.Data.MiningPerSecond;
-
-            while(popCell != cell) 
-            {
-                popCell = _cells.Pop();
-                _miningPerSecond.Value -= popCell.Data.MiningPerSecond;
-            }
+            var count = _cells.Count - _cells.IndexOf(cell);
+            _cells.RemoveRange(_cells.IndexOf(cell), count);
         }
     }
-
-    public bool Contain(Cell cell)
+    private void CheckRoute()
     {
-        foreach (Cell item in _cells)
+        if(_cells.First() == _cells.Last())
         {
-            if (item == cell) return true;
+            _isReady = true;
         }
-
-        return false;
     }
 }

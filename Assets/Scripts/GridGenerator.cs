@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class GridGenerator
 {
-    private CellsGrid _cellsGrid;
-    private CellFactory _cellFactory;
+    private readonly CellsGrid _cellsGrid;
+    private readonly CellFactory _cellFactory;
+    private Vector2Int _sourcePosition;
 
     public GridGenerator(CellsGrid cellsGrid, CellFactory cellFactory)
     {
         _cellFactory = cellFactory;
         _cellsGrid = cellsGrid;
+        _sourcePosition = _cellsGrid.SourcePosition;
     }
 
     public void Generate()
@@ -20,8 +22,7 @@ public class GridGenerator
             {
                 CellType type;
 
-                if(x == _cellsGrid.Config.GridSize.x - 1 &&
-                    y == _cellsGrid.Config.GridSize.y - 1)
+                if(x == _sourcePosition.x && y == _sourcePosition.y)
                 {
                     type = CellType.SOURCE;  
                 }

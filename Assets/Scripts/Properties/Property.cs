@@ -6,6 +6,11 @@ public class Property<T> where T : struct
     private T _value;
     private Action<T> _onChange;
 
+    public Property(T value)
+    {
+        Value = value;
+    }
+
     public T Value
     {
         get

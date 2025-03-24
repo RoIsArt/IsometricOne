@@ -6,7 +6,7 @@ public class Wallet
 
     public Wallet()
     {
-        _total = new Property<int>();
+        _total = new Property<int>(0);
     }
 
     public Property<int> Total { get { return _total; } }

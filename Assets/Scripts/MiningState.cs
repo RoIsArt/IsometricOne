@@ -6,9 +6,9 @@ using Zenject;
 
 public class MiningState : IState
 {
-    private Pointer _pointer;
-    private Highlighter _highlighter;
-    private Miner _miner;
+    private readonly Pointer _pointer;
+    private readonly Highlighter _highlighter;
+    private readonly Miner _miner;
 
     public MiningState(Pointer pointer, Highlighter highlighter)
     {
@@ -20,7 +20,7 @@ public class MiningState : IState
     {
         Action<Cell> action = _highlighter.HighlightForMine;
         _highlighter.SetHighlightMethod(action);
-        Coroutines.Instance.StartCoroutine(_miner.Mine());
+        //Coroutines.Instance.StartCoroutine(_miner.Mine());
 
     }
 
