@@ -18,6 +18,7 @@ public class Highlighter : IDisposable
     {
         _eventBus = eventBus;
         _cellsGrid = cellsGrid;
+        _highlightedCell = null;
         _eventBus.Subscribe<OnCellPointedEvent>(Highlight);
         _eventBus.Subscribe<OnStartBuildingCellEvent>(SetCellForBuild);
     }
@@ -47,11 +48,11 @@ public class Highlighter : IDisposable
 
     public void HighlightForBuild(Cell cell)
     {
-        _highlightedCell?.SetSprite(_highlightedCell.Data.Sprite);
+        _highlightedCell?.SetBaseSprite();
 
-        if (cell?.Data.Type == CellType.EMPTY)
+        if (cell.Data.Type == CellType.EMPTY)
         {
-            cell.SetSprite(_cellDataForBuild.Sprite);
+            cell.SetSprite(_cellDataForBuild.BaseSprite);
         }
 
         _highlightedCell = cell;
@@ -70,7 +71,7 @@ public class Highlighter : IDisposable
 
     private void SetCellForBuild(OnStartBuildingCellEvent onStartBuildingCellEvent)
     {
-        _cellDataForBuild = onStartBuildingCellEvent.CellData;
+        _cellDataForBuild = onStartBuildingCellEvent.BuildData;
     }
 
     public void ClearAllHighlighting()

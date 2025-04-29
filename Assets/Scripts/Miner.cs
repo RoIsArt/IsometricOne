@@ -3,19 +3,24 @@ using UnityEngine;
 
 public class Miner
 {
-    private Route _route;
-    private Wallet _wallet;
+    private readonly Wallet _wallet;
 
-    public Miner(CellsGrid cellsGrid)
+    private Route _route;
+    public Miner(Wallet wallet)
     {
-        var sourceCell = cellsGrid[cellsGrid.SourcePosition];
-        _route = new Route(sourceCell); 
-        _wallet = new Wallet();
+        _wallet = wallet;
+    }
+
+    public void SetRoute(Route route)
+    {
+        _route = route;
     }
     
     public IEnumerator Mine()
     {
         _wallet.Total.Value += _route.MiningPerSecond.Value;
+        Debug.Log(_wallet.Total.Value);
+
         yield return new WaitForSeconds(1);
     }
 }

@@ -1,18 +1,16 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 [RequireComponent(typeof(Button))]
 public class BuildButton : MonoBehaviour, IDisposable
 {
     [SerializeField] private Button _button;
-    [SerializeField] private CellData _cellForBuild;
+    [SerializeField] private string _cellKeyForBuild;
 
     private BuildingState _buildingState;
     private EventBus _eventBus;
 
-    [Inject]
     public void Construct(EventBus eventBus, BuildingState buildingState)
     {
         _eventBus = eventBus;
@@ -23,7 +21,7 @@ public class BuildButton : MonoBehaviour, IDisposable
 
     public void StartBuilding()    
     {
-        _eventBus.Invoke(new OnStartBuildingCellEvent(_cellForBuild));
+        //_eventBus.Invoke(new OnStartBuildingCellEvent(_cellKeyForBuild));
         _eventBus.Invoke(new OnChangeGroundStateEvent(_buildingState));   
     }
 

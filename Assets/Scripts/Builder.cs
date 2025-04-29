@@ -1,15 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Zenject;
 
 public class Builder : IDisposable
 {
-    private CellsGrid _cellsGrid;
-    private CellFactory _cellFactory;
-    private MiningState _miningState;
-    private EventBus _eventBus;
+    private readonly CellsGrid _cellsGrid;
+    private readonly CellFactory _cellFactory;
+    private readonly MiningState _miningState;
+    private readonly EventBus _eventBus;
 
     private CellData _cellDataForBuild;
     private Cell _pointedCell;
@@ -31,9 +27,9 @@ public class Builder : IDisposable
         if(_pointedCell == null) return;
         
         var index = _pointedCell.Index;
-        var cell = _cellFactory.CreateCell(_cellDataForBuild.Type, index);
+        var cell = _cellFactory.CreateCell(_cellDataForBuild, index);
         _cellsGrid.AddCellInGrid(cell);
-        _eventBus.Invoke(new OnCellBuildedEvent(_cellDataForBuild));   
+        _eventBus.Invoke(new OnCellBuildedEvent(cell.GetComponent<Cell>()));   
     }
 
     public void Dispose()
@@ -45,7 +41,7 @@ public class Builder : IDisposable
 
     private void PrepareForBuilding(OnStartBuildingCellEvent onStartBuildingCellEvent)
     {
-        _cellDataForBuild = onStartBuildingCellEvent.CellData;
+        _cellDataForBuild = onStartBuildingCellEvent.BuildData;
     }
 
     private void SetPointedForBuildingCell(OnCellPointedEvent onCellPointedEvent)

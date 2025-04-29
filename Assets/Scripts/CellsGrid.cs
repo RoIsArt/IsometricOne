@@ -1,54 +1,66 @@
 using System;
 using UnityEngine;
-using Zenject;
 
 public class CellsGrid : MonoBehaviour
 {
-    private CellsGridConfig _config;
+    private CellsDataConfig _cellsDataConfig;
+    private GridConfig _cellGridConfig;
+    private CellSizeConfig _cellSizeConfig;
     private Cell[,] _cells;
     private Vector2Int _sourcePosition;
+    private RouteConstructor _routeConstructor;
 
-    public CellsGridConfig Config { get { return _config; } }
+    public void Construct(EventBus eventBus)
+    { 
+        _cells = new Cell[_cellGridConfig.GridSize.x, _cellGridConfig.GridSize.y];
+        _sourcePosition = _cellGridConfig.SourcePosition;
+        _routeConstructor = new RouteConstructor(this, CreateRoute(), eventBus);
+    }
+
     public Cell[,] Cells { get { return _cells; } }
     public Vector2Int SourcePosition { get { return _sourcePosition; } }
-
     public Cell this[Vector2Int index]
     {
-        get => _cells[index.x, index.y];
+        get
+        {
+            if (!CheckOutOfRangeIndex(index))
+            {
+                return _cells[index.x, index.y];
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 
-    [Inject]
-    public void Construct(CellsGridConfig cellsGridConfig)
+    public void AddCellInGrid(GameObject cellToAdd)
     {
-        _config = cellsGridConfig;
-        _cells = new Cell[_config.GridSize.x, _config.GridSize.y];
-        _sourcePosition = _config.SourcePosition;
-    }
-
-    public void AddCellInGrid(Cell cellToAdd)
-    {
-        var index = cellToAdd.Index;
+        var cellComponent = cellToAdd.GetComponent<Cell>();
+        var index = cellComponent.Index;
         var cellOnGrid = _cells[index.x, index.y];
 
         if (cellOnGrid.Data.Type == CellType.EMPTY)
         {
             GameObject.Destroy(cellOnGrid.gameObject);
-            _cells[index.x, index.y] = cellToAdd;
+            _cells[index.x, index.y] = cellComponent;
             PlacedCellOnPosition(cellToAdd);
         }
     }
 
-    public void PlacedCellOnPosition(Cell cell)
+    public void PlacedCellOnPosition(GameObject cell)
     {
-        var index = cell.Index;
+        var cellComponent = cell.GetComponent<Cell>();
+        var index = cellComponent.Index;
+
         if (CheckOutOfRangeIndex(index))
         {
             throw new ArgumentOutOfRangeException("Grid not contain this position");
         }
 
-        _cells[index.x, index.y] = cell;
-        cell.gameObject.transform.parent = this.gameObject.transform;
-        cell.gameObject.transform.position = GetCellPosition(index);
+        _cells[index.x, index.y] = cellComponent;
+        cell.transform.parent = this.gameObject.transform;
+        cell.transform.position = GetCellPosition(index);
     }
 
     public bool CheckOutOfRangeIndex(Vector2Int index)
@@ -59,8 +71,8 @@ public class CellsGrid : MonoBehaviour
 
     public Vector2Int GetIndexFromPixel(Vector2 pixel)
     {
-        var xIndex = Mathf.RoundToInt((pixel.x /_config.CellWidth + pixel.y /_config.CellHeight)/2);
-        var yIndex = Mathf.RoundToInt((pixel.y /_config.CellHeight - pixel.x /_config.CellWidth)/2);
+        var xIndex = Mathf.RoundToInt((pixel.x / _cellSizeConfig.CellWidth + pixel.y / _cellSizeConfig.CellHeight)/2);
+        var yIndex = Mathf.RoundToInt((pixel.y / _cellSizeConfig.CellHeight - pixel.x / _cellSizeConfig.CellWidth)/2);
 
         var isOutOfRange = CheckOutOfRangeIndex(new Vector2Int(xIndex, yIndex));
 
@@ -76,6 +88,11 @@ public class CellsGrid : MonoBehaviour
 
     private Vector2 GetCellPosition(Vector2Int indexInArray)
     {
-        return indexInArray.x * _config.RightBasis + indexInArray.y * _config.LeftBasis;
+        return indexInArray.x * _cellSizeConfig.RightBasis + indexInArray.y * _cellSizeConfig.LeftBasis;
+    }
+
+    private Route CreateRoute()
+    {
+        return new Route((ConnectingCell)this[_sourcePosition]);
     }
 }

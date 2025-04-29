@@ -12,8 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d9ed6d348378ab4baeda196027a08f6, type: 3}
   m_Name: RoadWSCellData
   m_EditorClassIdentifier: 
+  _titleId: road_ws
   _cellType: 2
-  _cellPrefab: {fileID: 8940229631830400946, guid: 78cbcf477eb354f45aa95b25ee6bc53c, type: 3}
+  _cellPrefab: {fileID: 383608581235156040, guid: 78cbcf477eb354f45aa95b25ee6bc53c, type: 3}
   _cellSprite: {fileID: -969971643, guid: 7bf9981770ee09b47a722da421ddbb22, type: 3}
-  _connectSides: 0300000001000000
-  miningPerSecond: 1
+  _connectSides:
+  - _side: 3
+    _isConnected: 0
+  - _side: 1
+    _isConnected: 0
+  _minePerSecond: 1

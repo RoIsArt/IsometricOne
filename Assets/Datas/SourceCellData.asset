@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3714dc90c1f40ef4da550587f00322c3, type: 3}
   m_Name: SourceCellData
   m_EditorClassIdentifier: 
+  _titleId: source
   _cellType: 1
-  _cellPrefab: {fileID: 3837555289496746893, guid: aad8c95b44240ad4590a7de3e804e5c0, type: 3}
+  _cellPrefab: {fileID: 1828080126460980910, guid: aad8c95b44240ad4590a7de3e804e5c0, type: 3}
   _cellSprite: {fileID: -1222527010, guid: 7bf9981770ee09b47a722da421ddbb22, type: 3}
-  _connectSides: 0100000002000000
+  _connectSides:
+  - _side: 1
+    _isConnected: 0
+  - _side: 2
+    _isConnected: 0

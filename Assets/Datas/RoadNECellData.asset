@@ -12,8 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d9ed6d348378ab4baeda196027a08f6, type: 3}
   m_Name: RoadNECellData
   m_EditorClassIdentifier: 
+  _titleId: road_ne
   _cellType: 2
-  _cellPrefab: {fileID: 1530416882532076831, guid: 1db45288771a9d74f8a502ff541e33a6, type: 3}
+  _cellPrefab: {fileID: 7867326642778994950, guid: 1db45288771a9d74f8a502ff541e33a6, type: 3}
   _cellSprite: {fileID: 1149048609, guid: 7bf9981770ee09b47a722da421ddbb22, type: 3}
-  _connectSides: 0000000002000000
-  miningPerSecond: 1
+  _connectSides:
+  - _side: 0
+    _isConnected: 0
+  - _side: 2
+    _isConnected: 0
+  _minePerSecond: 1

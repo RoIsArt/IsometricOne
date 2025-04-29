@@ -20,7 +20,7 @@ public class Property<T> where T : struct
         set
         {
             _value = value;
-            _onChange.Invoke(value);
+            _onChange?.Invoke(value);
         }
     }
 
