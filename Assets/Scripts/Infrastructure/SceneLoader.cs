@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneLoader
+public class SceneLoader : ISceneLoader
 {
     private readonly ICoroutineRunner _coroutineRunner;
 

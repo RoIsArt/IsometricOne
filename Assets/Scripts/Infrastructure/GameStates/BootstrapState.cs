@@ -10,9 +10,9 @@ namespace Assets.Scripts.Infrastructure
         private const string INITIAL = "Initial";
         private readonly GameStateMachine _gameStateMachine;
         private readonly SceneLoader _sceneLoader;
-        private ServiceLocator _container;
+        private DIContainer _container;
 
-        public BootstrapState(GameStateMachine gameStateMachine, SceneLoader sceneLoader, ServiceLocator container)
+        public BootstrapState(GameStateMachine gameStateMachine, SceneLoader sceneLoader, DIContainer container)
         {
             _gameStateMachine = gameStateMachine;
             _sceneLoader = sceneLoader;
@@ -36,8 +36,9 @@ namespace Assets.Scripts.Infrastructure
 
         private void RegisterServices()
         {
-            _container.RegisterSingle<IAssets>(new AssetProvider());
-            _container.RegisterSingle<IUIFactory>(new UIFactory(Services.ServiceLocator.Container.Single<IAssets>()));
+            _container.Register<IAssets, AssetProvider>();
+            _container.Register<IUIFactory, UIFactory>();
+            _container.Register<ISceneLoader, SceneLoader>();
         }
     }
 }

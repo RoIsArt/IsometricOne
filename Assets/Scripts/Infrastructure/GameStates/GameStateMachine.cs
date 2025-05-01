@@ -12,12 +12,12 @@ namespace Assets.Scripts.Infrastructure
         private readonly Dictionary<Type, IExitableState> _states;
         private IExitableState _currentState;
 
-        public GameStateMachine(SceneLoader sceneLoader, ServiceLocator container) 
+        public GameStateMachine(SceneLoader sceneLoader, DIContainer container) 
         {
             _states = new Dictionary<Type, IExitableState>
             {
                 [typeof(BootstrapState)] = new BootstrapState(this, sceneLoader, container),
-                [typeof(LoadLevelState)] = new LoadLevelState(this, sceneLoader, container.Single<IUIFactory>()),
+                [typeof(LoadLevelState)] = new LoadLevelState(this, sceneLoader, container.Resolve<IUIFactory>()),
                 [typeof(GameLoopState)] = new GameLoopState(this),
             };
         }
