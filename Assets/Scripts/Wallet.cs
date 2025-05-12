@@ -1,4 +1,4 @@
-using UnityEngine;
+using Properties;
 
 public class Wallet
 {

@@ -1,36 +1,38 @@
 using System;
-using UnityEngine;
 
-public class Property<T> where T : struct
+namespace Properties
 {
-    private T _value;
-    private Action<T> _onChange;
-
-    public Property(T value)
+    public class Property<T> where T : struct
     {
-        Value = value;
-    }
+        private T _value;
+        private Action<T> _onChange;
 
-    public T Value
-    {
-        get
+        public Property(T value)
         {
-            return _value;
+            Value = value;
         }
-        set
+
+        public T Value
         {
-            _value = value;
-            _onChange?.Invoke(value);
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value;
+                _onChange?.Invoke(value);
+            }
         }
-    }
 
-    public void AddListener(Action<T> onChange)
-    {
-        _onChange += onChange;
-    }
+        public void AddListener(Action<T> onChange)
+        {
+            _onChange += onChange;
+        }
 
-    public void RemoveListener(Action<T> onChange)
-    {
-        _onChange -= onChange;
+        public void RemoveListener(Action<T> onChange)
+        {
+            _onChange -= onChange;
+        }
     }
 }

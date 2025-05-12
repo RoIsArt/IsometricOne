@@ -1,12 +1,17 @@
-﻿using UnityEngine;
+﻿using DatasAndConfigs;
+using GameEvents;
+using UnityEngine;
 
-public class RoadCell : ConnectingCell
+namespace Cells
 {
-    protected int _minePerSecond;
-
-    public void Construct(RoadCellData data, Vector2Int index)
+    public class RoadCell : ConnectingCell
     {
-        base.Construct(data, index);
-        _minePerSecond = data.MinePerSecond;
+        private int _minePerSecond;
+
+        public void Construct(RoadCellData data, Vector2Int index, IEventBus eventBus)
+        {
+            base.Construct(data, index, eventBus);
+            _minePerSecond = data.MinePerSecond;
+        }
     }
 }

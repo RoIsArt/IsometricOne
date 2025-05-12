@@ -1,13 +1,17 @@
-using System.Collections;
-using System.Linq;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "CellsGridConfig", menuName = "Cells/GridConfig")]
-public class GridConfig : ScriptableObject
+namespace DatasAndConfigs
 {
-    [SerializeField] private Vector2Int _gridSize;
-    [SerializeField] private Vector2Int _sourcePosition;
+    [CreateAssetMenu(fileName = "CellsGridConfig", menuName = "Cells/GridConfig")]
+    public class GridConfig : ScriptableObject
+    {
+        public Vector2Int GridSize;
+        public Vector2Int SourcePosition;
+        public Vector2Int CellSize;
 
-    public Vector2Int GridSize { get { return _gridSize; } }
-    public Vector2Int SourcePosition { get { return _sourcePosition; } }
+        public Vector2 RightBasis => new(CellWidth, CellHeight);
+        public Vector2 LeftBasis => new(-CellWidth, CellHeight);
+        private int CellWidth => CellSize.x / 2;
+        private int CellHeight => CellSize.y / 2;
+    }
 }

@@ -1,32 +1,33 @@
-using System;
+using Cells;
+using GameEvents;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Button))]
-public class BuildButton : MonoBehaviour, IDisposable
+namespace UI
 {
-    [SerializeField] private Button _button;
-    [SerializeField] private string _cellKeyForBuild;
-
-    private BuildingState _buildingState;
-    private EventBus _eventBus;
-
-    public void Construct(EventBus eventBus, BuildingState buildingState)
+    [RequireComponent(typeof(Button))]
+    public class BuildButton : MonoBehaviour
     {
-        _eventBus = eventBus;
-        _buildingState = buildingState;
+        [SerializeField] private Button _button;
+        [SerializeField] private CellType _cellTypeForBuild;
+        
+        private IEventBus _eventBus;
 
-        _button.onClick.AddListener(StartBuilding);
-    }
+        public void Construct(IEventBus eventBus)
+        {
+            _eventBus = eventBus;
 
-    public void StartBuilding()    
-    {
-        //_eventBus.Invoke(new OnStartBuildingCellEvent(_cellKeyForBuild));
-        _eventBus.Invoke(new OnChangeGroundStateEvent(_buildingState));   
-    }
+            _button.onClick.AddListener(OnClick);
+        }
 
-    public void Dispose()
-    {
-        _button.onClick.RemoveListener(StartBuilding);
+        private void OnClick()    
+        {
+            _eventBus.Invoke<OnStartBuildingCellEvent>(new OnStartBuildingCellEvent(_cellTypeForBuild));
+        }
+
+        private void OnDestroy()
+        {
+            _button.onClick.RemoveListener(OnClick);
+        }
     }
 }

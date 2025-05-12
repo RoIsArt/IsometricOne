@@ -1,11 +1,13 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public interface IGroundState
+namespace GroundState
 {
-    void Enter();
-    void Update();
-    void Exit();
+    public interface IGroundState
+    {
+        void Enter();
+        void Exit();
+    }
+
+    public interface IUpdatableGroundState : IGroundState
+    {
+        void Update();
+    }
 }

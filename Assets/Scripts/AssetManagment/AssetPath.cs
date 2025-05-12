@@ -1,8 +1,15 @@
-﻿namespace Assets.Scripts.AssetManagment
+﻿namespace AssetManagment
 {
     public class AssetPath
     {
-        public const string HUD_PATH = "UI/HUD";
-        public const string GRID_PATH = "Grid/CellsGrid";
+        public const string HUDPath = "UI/HUD";
+        public const string GridPath = "Prefabs/Grid/CellsGrid";
+        
+        private static readonly string SceneBootstrapperPath = "SceneBootstrappers";
+
+        public static string GetSceneBootstrapperPath(string sceneName)
+        {
+            return SceneBootstrapperPath + $"/{sceneName}Bootstrapper";
+        }
     }
 }

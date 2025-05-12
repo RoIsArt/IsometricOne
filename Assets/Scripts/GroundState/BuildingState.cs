@@ -1,41 +1,48 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
+using GameEvents;
+using GamePlayServices;
+using Infrastructure.Services;
 using UnityEngine;
 
-public class BuildingState : IGroundState
+namespace GroundState
 {
-    private readonly Builder _builder;
-    private readonly Highlighter _highlighter;
-    private readonly Pointer _pointer;
-
-    public BuildingState(Builder builder, 
-                        Highlighter highlighter,   
-                        Pointer pointer)
+    public class BuildingState : GroundStateDecorator
     {
-        _builder = builder;
-        _highlighter = highlighter;
-        _pointer = pointer;
-    }
+        private readonly GroundStateMachine _groundStateMachine;
+        private readonly IBuilder _builder;
+        private readonly IHighlighter _highlighter;
+        private readonly IEventBus _eventBus;
 
-    public void Enter()
-    {
-        Action<Cell> action = _highlighter.HighlightForBuild;
-        _highlighter.SetHighlightMethod(action);
-        _highlighter.HighlightEmptyCells();
-    }
-
-    public void Update()
-    {
-        if(Input.GetMouseButtonDown(0))
+        [Inject]
+        public BuildingState(GroundStateMachine groundStateMachine, 
+            IUpdatableGroundState baseState, 
+            IBuilder builder, 
+            IHighlighter highlighter, IEventBus eventBus) : base(groundStateMachine, baseState)
         {
-            _builder.BuildCell();
+            _builder = builder;
+            _highlighter = highlighter;
+            _eventBus = eventBus;
         }
-    }
 
-    public void Exit()
-    {
-        _highlighter.ClearAllHighlighting();
+        public override void Enter()
+        {
+            base.Enter();
+            _highlighter.StartBuild();
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            if (Input.GetMouseButtonDown(0))
+            {
+                var cell = _builder.Build();
+                _eventBus.Invoke(new OnCellBuildedEvent(cell));
+            }
+        }
+
+        public override void Exit()
+        {
+            base.Exit();
+            _highlighter.EndBuild();
+        }
     }
 }

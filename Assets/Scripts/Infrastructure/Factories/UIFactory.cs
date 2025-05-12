@@ -1,22 +1,22 @@
-﻿using Assets.Scripts.AssetManagment;
-using Assets.Scripts.Infrastructure.Services;
+﻿using AssetManagment;
+using Infrastructure.Services;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
-namespace Assets.Scripts.Infrastructure
+namespace Infrastructure.Factories
 {
     public class UIFactory : IUIFactory
     {
-        private readonly IAssets _assets;
-
-        public UIFactory(IAssets assets) 
+        private readonly IAssetProvider _assetProvider;
+        
+        [Inject]
+        public UIFactory(IAssetProvider assetProvider) 
         {
-            _assets = assets;
+            _assetProvider = assetProvider;
         }
 
-        public void CreateHud()
+        public GameObject CreateHud()
         {
-            _assets.Instantiate(AssetPath.HUD_PATH);
+            return _assetProvider.Instantiate(AssetPath.HUDPath);
         }
     }
 }

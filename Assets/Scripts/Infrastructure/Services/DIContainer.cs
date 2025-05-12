@@ -2,85 +2,171 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Unity.Android.Gradle.Manifest;
 
-namespace Assets.Scripts.Infrastructure.Services
+namespace Infrastructure.Services
 {
-    public class DIContainer
+    public class DiContainer : IDisposable
     {
-        private readonly Dictionary<Type, Type> _registrations;
-        private readonly Dictionary<Type, object> _singletons;
-        private readonly HashSet<Type> _resolutionStack;
+        private readonly Dictionary<Type, Func<object>> _globalRegistrations = new();
+        private readonly Dictionary<Type, object> _globalSingletons = new();
+        
+        private readonly Dictionary<Type, Func<object>> _scopedRegistrations = new();
+        private Dictionary<Type, object> _scopedInstances;
+        
+        private readonly HashSet<Type> _resolutionStack = new();
+        
+        private readonly List<IDisposable> _disposables = new();
+        
+        private bool _isScoped = false;
 
-        public DIContainer()
+        public void RegisterGlobal<TInterface, TImplementation>(Lifecycle lifecycle = Lifecycle.Transient)
+            where TImplementation : TInterface
         {
-            _registrations = new Dictionary<Type, Type>();
-            _singletons = new Dictionary<Type, object>();
-            _resolutionStack = new HashSet<Type>();
+            Func<object> factory = () => CreateInstance(typeof(TImplementation));
+            
+            if (lifecycle == Lifecycle.Singleton)
+                _globalSingletons[typeof(TInterface)] = factory();
+            else
+                _globalRegistrations[typeof(TInterface)] = factory;
+        }
+        
+        public void RegisterScene<TInterface, TImplementation>(Lifecycle lifecycle = Lifecycle.Transient)
+            where TImplementation : TInterface
+        {
+            if (!_isScoped)
+                throw new InvalidOperationException("Scene registration is only allowed within a scope.");
+
+            Func<object> factory = () =>
+            {
+                var instance = CreateInstance(typeof(TImplementation));
+                TrackDisposable(instance);
+                return instance;
+            };
+
+            if (lifecycle == Lifecycle.Singleton)
+                _scopedInstances[typeof(TInterface)] = factory();
+            else
+                _scopedRegistrations[typeof(TInterface)] = factory;
         }
 
-        public void Register<TInterface, TImplementation>() where TImplementation : TInterface
+        public void Register<T>(Func<T> factory, Lifecycle lifecycle = Lifecycle.Transient)
         {
-            _registrations[typeof(TInterface)] = typeof(TImplementation);
+            if (lifecycle == Lifecycle.Singleton)
+                _globalSingletons[typeof(T)] = factory();
+            else
+                _globalRegistrations[typeof(T)] = () => factory();
         }
-
-        public void RegisterSingleton<TInterface, TImplementation>() where TImplementation : TInterface
+        
+        public void RegisterInstance<TInterface>(TInterface instance)
         {
-            Type interfaceType = typeof(TInterface);
-            Type implementationType = typeof(TImplementation);
-            _registrations[interfaceType] = implementationType;
-            _singletons[interfaceType] = CreateInstance(implementationType);
+            _globalSingletons[typeof(TInterface)] = instance;
         }
 
         public T Resolve<T>()
         {
             return (T)Resolve(typeof(T));
         }
-
-        public object Resolve(Type type)
+        
+        public void StartScope()
         {
-            if (_singletons.TryGetValue(type, out var singleton))
-                return singleton;
+            if (_isScoped)
+                throw new InvalidOperationException("A scope is already active. Call EndScope() first.");
 
-            if (!_registrations.TryGetValue(type, out var implementationType))
-                throw new InvalidOperationException($"Type {type.Name} is not registered");
+            _isScoped = true;
+            _scopedInstances = new Dictionary<Type, object>();
+        }
+        
+        public void EndScope()
+        {
+            if (!_isScoped)
+                throw new InvalidOperationException("No active scope to end.");
+            
+            foreach (var instance in _scopedInstances.Values.OfType<IDisposable>())
+                instance.Dispose();
 
-            return CreateInstance(implementationType);
+            _scopedInstances.Clear();
+            _isScoped = false;
+        }
+        
+        public void Dispose()
+        {
+            foreach (var disposable in _disposables)
+                disposable.Dispose();
+
+            _disposables.Clear();
+            _globalRegistrations.Clear();
+            _globalSingletons.Clear();
+        }
+        
+        private void TrackDisposable(object instance)
+        {
+            if (instance is IDisposable disposable)
+                _disposables.Add(disposable);
         }
 
-        private object CreateInstance(Type implementationType)
+        private object Resolve(Type type)
         {
-            if (_resolutionStack.Contains(implementationType))
-                throw new InvalidOperationException($"Circular dependency detected for type {implementationType.Name}");
+            if (_isScoped && _scopedInstances.TryGetValue(type, out var scopedInstance))
+                return scopedInstance;
 
-            _resolutionStack.Add(implementationType);
+            if (_isScoped && _scopedRegistrations.TryGetValue(type, out var scopedFactory))
+                return scopedFactory();
+            
+            if (_globalSingletons.TryGetValue(type, out var globalInstance))
+                return globalInstance;
 
-            ConstructorInfo constructor = GetConstructor(implementationType);
-            ParameterInfo[] parameters = constructor.GetParameters();
+            if (_globalRegistrations.TryGetValue(type, out var globalFactory))
+                return globalFactory();
 
-            object[] parameterInstances = new object[parameters.Length];
-            for (int i = 0; i < parameters.Length; i++)
+            throw new InvalidOperationException($"Type {type.Name} is not registered.");
+        }
+
+        private object CreateInstance(Type type)
+        {
+            if (!_resolutionStack.Add(type))
+                throw new InvalidOperationException($"Circular dependency for {type.Name}");
+
+            try
             {
-                parameterInstances[i] = Resolve(parameters[i].ParameterType);
+                var constructor = GetConstructor(type);
+                var args = constructor.GetParameters()
+                    .Select(p => Resolve(p.ParameterType))
+                    .ToArray();
+
+                return constructor.Invoke(args);
             }
-
-            _resolutionStack.Remove(implementationType);
-
-            return constructor.Invoke(parameterInstances);
+            finally
+            {
+                _resolutionStack.Remove(type);
+            }
         }
 
         private ConstructorInfo GetConstructor(Type type)
         {
-            ConstructorInfo[] constructors = type.GetConstructors();
+            var constructors = type.GetConstructors();
+            
+            var injectConstructors = constructors
+                .Where(c => c.GetCustomAttribute<InjectAttribute>() != null)
+                .ToList();
 
-            if (constructors.Length == 0)
-                throw new InvalidOperationException($"No public constructor found for {type.Name}");
+            if (injectConstructors.Count > 1)
+                throw new InvalidOperationException(
+                    $"Multiple [Inject] constructors found for {type.Name}. " +
+                    "Only one constructor can be marked with [Inject]."
+                );
 
-            Array.Sort(constructors, (a, b) => b.GetParameters().Length.CompareTo(a.GetParameters().Length));
-
-            return constructors[0];
+            if (injectConstructors.Count == 1)
+                return injectConstructors[0];
+            
+            var parameterlessConstructor = constructors.FirstOrDefault(c => c.GetParameters().Length == 0);
+            if (parameterlessConstructor != null)
+                return parameterlessConstructor;
+            
+            throw new InvalidOperationException(
+                $"No suitable constructor found for {type.Name}. " +
+                "Either add [Inject] to a constructor or provide a parameterless constructor."
+            );
         }
+
     }
 }

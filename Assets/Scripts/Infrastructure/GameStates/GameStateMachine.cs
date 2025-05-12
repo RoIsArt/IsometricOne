@@ -1,24 +1,24 @@
-﻿using Assets.Scripts.Infrastructure.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AssetManagment;
+using Infrastructure.Game;
+using Infrastructure.SceneManagment;
+using Infrastructure.Services;
 
-namespace Assets.Scripts.Infrastructure
+namespace Infrastructure.GameStates
 {
     public class GameStateMachine
     {
         private readonly Dictionary<Type, IExitableState> _states;
         private IExitableState _currentState;
 
-        public GameStateMachine(SceneLoader sceneLoader, DIContainer container) 
+        public GameStateMachine(SceneLoader sceneLoader, DiContainer container, ICoroutineRunner coroutineRunner) 
         {
             _states = new Dictionary<Type, IExitableState>
             {
-                [typeof(BootstrapState)] = new BootstrapState(this, sceneLoader, container),
-                [typeof(LoadLevelState)] = new LoadLevelState(this, sceneLoader, container.Resolve<IUIFactory>()),
-                [typeof(GameLoopState)] = new GameLoopState(this),
+                [typeof(BootstrapState)] = new BootstrapState(this, sceneLoader, container, coroutineRunner),
+                [typeof(LoadLevelState)] = new LoadLevelState(this, sceneLoader, container.Resolve<IAssetProvider>()),
+                [typeof(MainGameState)] = new MainGameState(container)
             };
         }
 

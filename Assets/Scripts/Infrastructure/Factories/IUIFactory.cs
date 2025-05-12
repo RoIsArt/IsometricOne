@@ -1,10 +1,10 @@
-﻿using Assets.Scripts.Infrastructure.Services;
+﻿using Infrastructure.Services;
 using UnityEngine;
 
-namespace Assets.Scripts.Infrastructure
+namespace Infrastructure.Factories
 {
     public interface IUIFactory : IService
     {
-        void CreateHud();
+        GameObject CreateHud();
     }
 }

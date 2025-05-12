@@ -1,22 +1,19 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-[Serializable]
-public class ConnectingSide
+namespace Cells
 {
-    [SerializeField] private Side _side;
-    [SerializeField] private bool _isConnected;
-
-    public Side Side {  get { return _side; } }
-    public bool IsConnected { get { return _isConnected; } }
-
-    public void Connected()
+    [Serializable]
+    public class ConnectingSide
     {
-        _isConnected = true;
-    }
+        [FormerlySerializedAs("_side")] [SerializeField] private SideName sideName;
+        [FormerlySerializedAs("_isConnected")] [SerializeField] private bool isConnected;
 
-    public void Disconnected()
-    {
-        _isConnected = false;
+        public SideName SideName => sideName;
+        public bool IsConnected => isConnected;
+        
+        public void Connect() => isConnected = true;
+        public void Disconnect() => isConnected = false;
     }
 }

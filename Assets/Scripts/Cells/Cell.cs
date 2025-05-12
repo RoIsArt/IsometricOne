@@ -1,31 +1,53 @@
-using System;
-using System.Collections;
-using System.Linq;
+using DatasAndConfigs;
+using GameEvents;
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer))]
-public abstract class Cell : MonoBehaviour
+namespace Cells
 {
-    [SerializeField] protected GameObject _selected;
+    [RequireComponent(typeof(SpriteRenderer))]
+    [RequireComponent(typeof(SelectorChanger))]
 
-    protected CellData _data;
-    protected Vector2Int _index;
-    protected SpriteRenderer _spriteRenderer;
-
-    public void Construct(CellData data, Vector2Int index)
+    public abstract class Cell : MonoBehaviour
     {
-        _data = data;
-        _index = index;
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        private CellData _data;
+        private Vector2Int _cellIndex;
+        private SpriteRenderer _spriteRenderer;
+        private IEventBus _eventBus;
+        private SelectorChanger _selector;
+
+        private bool _isPointed;
+        
+        public void Construct(CellData data, Vector2Int index, IEventBus eventBus)
+        {
+            _data = data;
+            _cellIndex = index;
+            _eventBus = eventBus;
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+            _selector = GetComponent<SelectorChanger>();
+        }
+        
+        public CellType Type => _data.Type;
+        public Vector2Int Index => _cellIndex;
+        public SelectorChanger Selector => _selector;
+
+        public void SetSprite(Sprite sprite) =>
+            _spriteRenderer.sprite = sprite;
+
+        public void SetBaseSprite() =>
+            SetSprite(_data.BaseSprite);
+
+        public void Point()
+        {
+            if (!_isPointed)
+            {
+                _eventBus.Invoke((new OnCellMouseEnterEvent(this)));
+                _isPointed = true;
+            }
+            else
+            {
+                _eventBus.Invoke((new OnCellMouseExitEvent(this)));
+                _isPointed = false;
+            }
+        }
     }
-
-    public Vector2Int Index { get { return _index; } }
-    public GameObject Selected { get { return _selected; } }
-    public CellData Data { get { return _data; } }
-
-    public void SetSprite(Sprite sprite) =>
-        _spriteRenderer.sprite = sprite;
-
-    public void SetBaseSprite() =>
-        _spriteRenderer.sprite = _data.BaseSprite;
 }

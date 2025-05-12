@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
+using Cells;
 
-public class ConnectingCellData : CellData
+namespace DatasAndConfigs
 {
-    [SerializeField] private List<ConnectingSide> _connectSides;
-    public List<ConnectingSide> ConnectingSides { get { return _connectSides; } }
+    public class ConnectingCellData : CellData
+    {
+        public List<ConnectingSide> ConnectingSides;
+    }
 }

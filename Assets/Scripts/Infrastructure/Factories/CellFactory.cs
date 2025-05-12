@@ -1,20 +1,36 @@
-using System.Collections.Generic;
+using Cells;
+using GameEvents;
+using Infrastructure.Services;
 using UnityEngine;
 
-public class CellFactory
+namespace Infrastructure.Factories
 {
-    private CellsDataConfig _cellsDataConfig;
-
-    public CellFactory(CellsDataConfig cellsDataConfig)
+    public class CellFactory : ICellFactory
     {
-        _cellsDataConfig = cellsDataConfig;
-    }
+        private readonly IStaticDataService _staticDataService;
+        private readonly IEventBus _eventBus;
+        private CellsGrid _grid;
+        
+        [Inject]
+        public CellFactory(IStaticDataService staticDataService, IEventBus eventBus)
+        {
+            _staticDataService = staticDataService;
+            _eventBus = eventBus;
+        }
+        
+        public Cell Create(CellType type, Vector2Int index)
+        {
+            var data = _staticDataService.ForCell(type);
+            var cellInstance = GameObject.Instantiate(data.Prefab, _grid.transform);
+            var cell = cellInstance.GetComponent<Cell>();
+            cell.Construct(data, index, _eventBus);
+            _grid.AddCellInGrid(cell);
+            return cell;
+        }
 
-    public GameObject CreateCell(CellData cellData, Vector2Int index)
-    {
-        var data = _cellsDataConfig.CellDatas[cellData.Type];
-        var cell = GameObject.Instantiate(data.Prefab);
-        cell.GetComponent<Cell>().Construct(data, index);
-        return cell;
+        public void AssignGrid(CellsGrid grid)
+        {
+            _grid = grid;
+        }
     }
 }

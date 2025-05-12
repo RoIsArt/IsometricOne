@@ -1,41 +1,32 @@
-﻿namespace Assets.Scripts.GroundState
+﻿using Cells;
+using GameEvents;
+using Infrastructure.Factories;
+
+namespace GroundState
 {
     public class InitialState : IGroundState
     {
-        private GroundStateMachine _groundStateMachine;
-        private CellsGrid _cellsGrid;
-        private GridFactory _gridGenerator;
-        private CellFactory _cellFactory;
-        private CellsDataConfig _cellsDataConfig;
-        private GridConfig _cellsGridConfig;
+        private readonly GroundStateMachine _groundStateMachine;
+        private readonly IGridFactory _gridFactory;
+        private readonly IEventBus _eventBus;
 
-        public InitialState(CellsGrid cellsGrid, 
-                            GridFactory gridGenerator, 
-                            CellFactory cellFactory, 
-                            CellsDataConfig cellsDataConfig, 
-                            GridConfig cellsGridConfig)
+        public InitialState(GroundStateMachine groundStateMachine, IGridFactory gridFactory, IEventBus eventBus)
         {
-            _cellsGrid = cellsGrid;
-            _gridGenerator = gridGenerator;
-            _cellFactory = cellFactory;
-            _cellsDataConfig = cellsDataConfig;
-            _cellsGridConfig = cellsGridConfig;
+            _groundStateMachine = groundStateMachine;
+            _gridFactory = gridFactory;
+            _eventBus = eventBus;
         }
 
         public void Enter()
         {
-            _gridGenerator.Create();
-            _groundStateMachine.SetState<MiningState>();
+            _gridFactory.Create(out CellsGrid grid);
+            _eventBus.Invoke<OnGridInitializedEvent>(new OnGridInitializedEvent(grid));
+            _groundStateMachine.Enter<MiningState>();
         }
 
         public void Exit()
         {
-            throw new System.NotImplementedException();
-        }
 
-        public void Update()
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

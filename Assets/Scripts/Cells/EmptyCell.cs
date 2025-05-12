@@ -1,9 +1,6 @@
-﻿using UnityEngine;
-
-public class EmptyCell : Cell
+﻿namespace Cells
 {
-    public void Construct(EmptyCellData data, Vector2Int index)
+    public class EmptyCell : Cell
     {
-        base.Construct(data, index);
     }
 }

@@ -1,9 +1,8 @@
-﻿using Assets.Scripts.Infrastructure.Services;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Assets.Scripts.AssetManagment
+namespace AssetManagment
 {
-    public class AssetProvider : IAssets
+    public class AssetProvider : IAssetProvider
     {
         public GameObject Instantiate(string path)
         {

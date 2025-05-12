@@ -1,32 +1,36 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using DatasAndConfigs;
+using GameEvents;
 using UnityEngine;
 
-public class ConnectingCell : Cell
+namespace Cells
 {
-    protected List<ConnectingSide> _connectingSides;
-
-    public void Construct(ConnectingCellData data, Vector2Int index)
+    public class ConnectingCell : Cell
     {
-        base.Construct(data, index);
-        _connectingSides = new List<ConnectingSide>();
-        _connectingSides = data.ConnectingSides;
-    }
+        protected List<ConnectingSide> ConnectingSides;
 
-    public List<ConnectingSide> ConnectingSides { get { return _connectingSides; } }
-
-    public ConnectingSide GetConnectingSide(Side fromSide)
-    {
-        return _connectingSides.FirstOrDefault(x => x.Side == fromSide);
-    }
-
-    public bool ContainSide(Side side)
-    {
-        foreach (var connectingSide in _connectingSides)
+        public void Construct(ConnectingCellData data, Vector2Int index, IEventBus eventBus)
         {
-            if (connectingSide.Side == side) return true;
+            base.Construct(data, index, eventBus);
+            ConnectingSides = new List<ConnectingSide>();
+            ConnectingSides = data.ConnectingSides;
         }
 
-        return false;
+        public ConnectingSide GetConnectingSide(SideName fromSideName) => 
+            ConnectingSides.FirstOrDefault(x => x.SideName == fromSideName);
+
+        public ConnectingSide GetUnconnetSide() => 
+            ConnectingSides.FirstOrDefault((x => !x.IsConnected));
+
+        public bool ContainSide(SideName sideName)
+        {
+            foreach (var connectingSide in ConnectingSides)
+            {
+                if (connectingSide.SideName == sideName) return true;
+            }
+
+            return false;
+        }
     }
 }

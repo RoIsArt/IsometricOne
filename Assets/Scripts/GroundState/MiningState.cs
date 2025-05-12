@@ -1,42 +1,35 @@
-using Assets.Scripts.GameEvents;
 using System;
 
-public class MiningState : IGroundState, IDisposable
+namespace GroundState
 {
-    private readonly Highlighter _highlighter;
-    private readonly Miner _miner;
-    private readonly EventBus _eventBus;
-
-    public MiningState(Highlighter highlighter, EventBus eventBus)
+    public class MiningState : IUpdatableGroundState, IDisposable
     {
-        _highlighter = highlighter;
-        _eventBus = eventBus;
+        private readonly GroundStateMachine _groundStateMachine;
+        
+        public MiningState(GroundStateMachine groundStateMachine)
+        {
+            _groundStateMachine = groundStateMachine;
+        }
+        
+        public void Enter()
+        {
+
+        }
+
+        public void Update()
+        {
+
+        }
+
+
+        public void Exit()
+        {
+
+        }
+
+        public void Dispose()
+        {
+
+        }
     }
-
-    private void StartMine(OnRouteIsReady onRouteIsReady)
-    {
-        _miner.SetRoute(onRouteIsReady.Route);
-    }
-
-    public void Enter()
-    {
-        Action<Cell> action = _highlighter.HighlightForMine;
-        _highlighter.SetHighlightMethod(action);
-    }
-
-    public void Update()
-    {
-        throw new NotImplementedException();
-    }
-
-
-    public void Exit()
-    {
-
-    }
-
-    public void Dispose()
-    {
-        //_eventBus.Unsubscribe<OnRouteIsReady>(StartMine);
-    } 
 }

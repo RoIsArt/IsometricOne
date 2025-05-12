@@ -1,4 +1,6 @@
-﻿public class SourceCellData : ConnectingCellData
+﻿namespace DatasAndConfigs
 {
-
+    public class SourceCellData : ConnectingCellData
+    {
+    }
 }

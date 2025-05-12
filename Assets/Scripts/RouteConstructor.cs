@@ -1,7 +1,7 @@
-using Assets.Scripts.GameEvents;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Cells;
+using GameEvents;
 using UnityEngine;
 
 public class RouteConstructor : IDisposable
@@ -10,20 +10,30 @@ public class RouteConstructor : IDisposable
     private readonly CellsGrid _cellsGrid;
     private readonly EventBus _eventBus;
 
-    private readonly Dictionary<Side, Side> _oppositeSide = new ()
-        {
-            { Side.NORTH, Side.SOUTH },
-            { Side.EAST, Side.WEST },
-            { Side.WEST, Side.EAST },
-            { Side.SOUTH, Side.NORTH }
-        };
-    private readonly Dictionary<Side, Vector2Int> _offsetToSide = new ()
-        {
-            {Side.NORTH, new Vector2Int(1, 0)},
-            {Side.EAST, new Vector2Int(0, -1)},
-            {Side.WEST, new Vector2Int(0, 1)},
-            {Side.SOUTH, new Vector2Int(-1, 0)}
-        };
+    private readonly Dictionary<SideName, SideName> _oppositeSide = new ()
+    {
+        { SideName.North, SideName.South },
+        { SideName.East, SideName.West },
+        { SideName.West, SideName.East },
+        { SideName.South, SideName.North }
+    };
+    private readonly Dictionary<SideName, Vector2Int> _offsetToSide = new ()
+    {
+        {SideName.North, new Vector2Int(1, 0)},
+        {SideName.East, new Vector2Int(0, -1)},
+        {SideName.West, new Vector2Int(0, 1)},
+        {SideName.South, new Vector2Int(-1, 0)}
+    };
+    private readonly List<CellType> _connectableTypes = new()
+    {
+        CellType.Source,
+        CellType.RoadNe,
+        CellType.RoadNs,
+        CellType.RoadSe,
+        CellType.RoadWe,
+        CellType.RoadWn,
+        CellType.RoadWs
+    };
 
     public RouteConstructor(CellsGrid cellsGrid, Route route, EventBus eventBus)
     {
@@ -38,7 +48,7 @@ public class RouteConstructor : IDisposable
 
     public void AddInRoute(OnCellBuildedEvent onCellBuildedEvent)
     {
-        if (_route.IsReady || onCellBuildedEvent.Cell.Data.Type != CellType.ROAD) return;
+        if (_route.IsReady || _connectableTypes.Contains(onCellBuildedEvent.Cell.Type)) return;
 
         var unconnectedSide = GetUnconnectedSide(LastCellInRoute);
         var cellForAttached = GetNextCellForAttach(unconnectedSide);
@@ -54,26 +64,20 @@ public class RouteConstructor : IDisposable
 
     private ConnectingSide GetUnconnectedSide(ConnectingCell cell)
     {
-        foreach (var side in cell.ConnectingSides)
-        {
-            if(!side.IsConnected) 
-                return side; 
-        }
-
-        return null;
+        return cell.GetUnconnetSide();
     }
 
     private Cell GetNextCellForAttach(ConnectingSide connectingSide)
     {
-        var nextCellIndex = LastCellInRoute.Index + _offsetToSide[connectingSide.Side];
+        var nextCellIndex = LastCellInRoute.Index + _offsetToSide[connectingSide.SideName];
         return _cellsGrid[nextCellIndex];
     }
 
     private void CheckNextCell(ConnectingCell cellForAttached, ConnectingSide connectingSide)
     {
-        if (cellForAttached == null || cellForAttached.Data.Type != CellType.ROAD) return;
+        if (cellForAttached == null || !_connectableTypes.Contains(cellForAttached.Type)) return;
 
-        var oppositeSide = _oppositeSide[connectingSide.Side];
+        var oppositeSide = _oppositeSide[connectingSide.SideName];
 
         if (cellForAttached.ContainSide(oppositeSide))
         {
@@ -90,8 +94,8 @@ public class RouteConstructor : IDisposable
 
     private void Attach(ConnectingCell to, ConnectingCell cell, ConnectingSide connectSide)
     {
-        to.GetConnectingSide(connectSide.Side).Connected();
-        cell.GetConnectingSide(_oppositeSide[connectSide.Side]).Connected();
+        to.GetConnectingSide(connectSide.SideName).Connect();
+        cell.GetConnectingSide(_oppositeSide[connectSide.SideName]).Connect();
         _route.Add(cell);
     }
 

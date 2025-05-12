@@ -1,4 +1,6 @@
-﻿public class EmptyCellData : CellData
+﻿namespace DatasAndConfigs
 {
-
+    public class EmptyCellData : CellData
+    {
+    }
 }

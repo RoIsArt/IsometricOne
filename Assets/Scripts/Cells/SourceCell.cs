@@ -1,4 +1,7 @@
-﻿public class SourceCell : ConnectingCell
+﻿namespace Cells
 {
+    public class SourceCell : ConnectingCell
+    {
     
+    }
 }
