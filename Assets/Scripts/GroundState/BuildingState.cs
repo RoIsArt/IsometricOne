@@ -1,48 +1,46 @@
-using GameEvents;
-using GamePlayServices;
-using Infrastructure.Services;
+﻿using GamePlayServices;
+using UnityEngine.Windows;
 using UnityEngine;
+using Input = UnityEngine.Input;
 
 namespace GroundState
 {
-    public class BuildingState : GroundStateDecorator
+    public class BuildingState : IUpdatableGridState
     {
-        private readonly GroundStateMachine _groundStateMachine;
-        private readonly IBuilder _builder;
+        private readonly GridStateMachine _gridStateMachine;
+        private readonly IUpdatableGridState _baseState;
         private readonly IHighlighter _highlighter;
-        private readonly IEventBus _eventBus;
+        private readonly IBuilder _builder;
 
-        [Inject]
-        public BuildingState(GroundStateMachine groundStateMachine, 
-            IUpdatableGroundState baseState, 
-            IBuilder builder, 
-            IHighlighter highlighter, IEventBus eventBus) : base(groundStateMachine, baseState)
+        public BuildingState(GridStateMachine gridStateMachine, IUpdatableGridState baseState, IHighlighter highlighter, IBuilder builder)
         {
-            _builder = builder;
+            _gridStateMachine = gridStateMachine;
+            _baseState = baseState;
             _highlighter = highlighter;
-            _eventBus = eventBus;
+            _builder = builder;
         }
 
-        public override void Enter()
+        public void Enter()
         {
-            base.Enter();
             _highlighter.StartBuild();
         }
 
-        public override void Update()
+        // ReSharper disable Unity.PerformanceAnalysis
+        public void Update()
         {
-            base.Update();
+            _baseState.Update();
+
             if (Input.GetMouseButtonDown(0))
             {
-                var cell = _builder.Build();
-                _eventBus.Invoke(new OnCellBuildedEvent(cell));
+                _builder.Build();
+                _gridStateMachine.Enter<MiningState>();
             }
         }
-
-        public override void Exit()
+        
+        public void Exit()
         {
-            base.Exit();
             _highlighter.EndBuild();
         }
+
     }
 }

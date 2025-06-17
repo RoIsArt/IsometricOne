@@ -1,32 +1,21 @@
-﻿using Cells;
-using GameEvents;
-using Infrastructure.Factories;
-
-namespace GroundState
+﻿namespace GroundState
 {
-    public class InitialState : IGroundState
+    public class InitialState : IGridState
     {
-        private readonly GroundStateMachine _groundStateMachine;
-        private readonly IGridFactory _gridFactory;
-        private readonly IEventBus _eventBus;
+        private readonly GridStateMachine _gridStateMachine;
 
-        public InitialState(GroundStateMachine groundStateMachine, IGridFactory gridFactory, IEventBus eventBus)
+        public InitialState(GridStateMachine gridStateMachine)
         {
-            _groundStateMachine = groundStateMachine;
-            _gridFactory = gridFactory;
-            _eventBus = eventBus;
+            _gridStateMachine = gridStateMachine;
         }
 
         public void Enter()
         {
-            _gridFactory.Create(out CellsGrid grid);
-            _eventBus.Invoke<OnGridInitializedEvent>(new OnGridInitializedEvent(grid));
-            _groundStateMachine.Enter<MiningState>();
+            _gridStateMachine.Enter<MiningState>();
         }
 
         public void Exit()
         {
-
         }
     }
 }

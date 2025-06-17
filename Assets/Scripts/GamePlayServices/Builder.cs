@@ -13,7 +13,9 @@ namespace GamePlayServices
         private readonly ICellFactory _cellFactory;
         private readonly IEventBus _eventBus;
         private readonly IStaticDataService _staticData;
+        private CellsGrid _cellsGrid;
 
+        private Cell[,] _cells;
         private CellData _buildData;
         private Cell _pointedCell;
     
@@ -25,12 +27,17 @@ namespace GamePlayServices
             _staticData = staticData;
 
             _eventBus.Subscribe<OnStartBuildingCellEvent>(PrepareForBuilding);
+            _eventBus.Subscribe<OnCellMouseEnterEvent>(SetPointedCell);
             _eventBus.Subscribe<OnCellBuildedEvent>(CompleteBulding);
+            _eventBus.Subscribe<OnCellsGridCreatedEvent>(DefineGrid);
         }
 
         public Cell Build()
         { 
-            var cell = _cellFactory.Create(_buildData.Type, _pointedCell.Index);
+            var cell = _cellFactory.Create(_buildData.Type, _pointedCell.Index)
+                .GetComponent<Cell>();
+            _cellsGrid.AddCell(cell);
+            
             _eventBus.Invoke(new OnCellBuildedEvent(cell));
             return cell;
         }
@@ -40,6 +47,12 @@ namespace GamePlayServices
             _eventBus.Unsubscribe<OnStartBuildingCellEvent>(PrepareForBuilding);
             _eventBus.Unsubscribe<OnCellMouseEnterEvent>(SetPointedCell);
             _eventBus.Unsubscribe<OnCellBuildedEvent>(CompleteBulding);
+            _eventBus.Unsubscribe<OnCellsGridCreatedEvent>(DefineGrid);
+        }
+
+        private void DefineGrid(OnCellsGridCreatedEvent onCellsGridCreatedEvent)
+        {
+            _cellsGrid = onCellsGridCreatedEvent.CellsGrid;
         }
 
         private void PrepareForBuilding(OnStartBuildingCellEvent onStartBuildingCellEvent)

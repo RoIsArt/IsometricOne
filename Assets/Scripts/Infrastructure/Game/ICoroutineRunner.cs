@@ -6,7 +6,7 @@ namespace Infrastructure.Game
 {
     public interface ICoroutineRunner : IService
     {
-        Coroutine StartRoutine(IEnumerator routine);
-        void StopRoutine(Coroutine routine);
+        Coroutine StartCoroutine(IEnumerator routine);
+        void StopCoroutine(IEnumerator routine);
     }
 }

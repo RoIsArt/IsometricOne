@@ -1,19 +1,17 @@
-﻿using System.Collections.Generic;
-using GameEvents;
+﻿using GameEvents;
+using GroundState;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UI
 {
     public class HUD :MonoBehaviour
     {
-        [SerializeField] private List<BuildButton> _buildButtons;
-
-        public void Construct(IEventBus eventBus)
+        [FormerlySerializedAs("_builderPanel")] [SerializeField] private BuilderPanel builderPanel;
+        
+        public void Construct(IEventBus eventBus, GridStateMachine gridStateMachine)
         {
-            foreach (var buildButton in _buildButtons)
-            {
-                buildButton.Construct(eventBus);
-            }
+            builderPanel.Construct(eventBus, gridStateMachine);
         }
     }
 }

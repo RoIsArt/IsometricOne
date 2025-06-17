@@ -6,16 +6,7 @@ namespace Cells
     {
         [SerializeField] private GameObject _selector;
 
-        public void Activate()
-        {
-            if(!_selector.activeSelf)
-                _selector.SetActive(true);
-        }
-
-        public void Deactivate()
-        {
-            if(_selector.activeSelf)
-                _selector.SetActive(false);
-        }
+        public void SetActive(bool activity) => 
+            _selector.SetActive(activity);
     }
 }

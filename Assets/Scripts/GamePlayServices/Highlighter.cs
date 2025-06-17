@@ -9,55 +9,48 @@ namespace GamePlayServices
 {
     public class Highlighter : IHighlighter, IDisposable
     {
-        private readonly IEventBus _eventBus;
         private readonly IStaticDataService _staticData;
+        private readonly IEventBus _eventBus;
         private Cell[,] _cells;
 
         private Cell _pointedCell;
         private CellData _buildData;
 
         [Inject]
-        public Highlighter(IEventBus eventBus, IStaticDataService staticData)
+        public Highlighter(IStaticDataService staticData, IEventBus eventBus)
         {
-            _eventBus = eventBus;
             _staticData = staticData;
-
-            _eventBus.Subscribe<OnGridInitializedEvent>(AssignGrid);
+            _eventBus = eventBus;
+            
             _eventBus.Subscribe<OnCellMouseEnterEvent>(Highlight);
             _eventBus.Subscribe<OnCellMouseExitEvent>(RemoveHighlight);
-            _eventBus.Subscribe<OnStartBuildingCellEvent>(SetCellForBuild);
+            _eventBus.Subscribe<OnCellsGridCreatedEvent>(Initialize);
+            _eventBus.Subscribe<OnStartBuildingCellEvent>(PrepareForBuild);
         }
-
-        public void ClearCellForBuild()
-        {
-            _buildData = null;
-        }
-
-
+        
         public void Highlight(OnCellMouseEnterEvent onCellMouseEnterEvent)
         {
             _pointedCell = onCellMouseEnterEvent.Cell;
 
             if (_buildData != null)
             {
-                if(_pointedCell.Type == CellType.Empty)
-                    _pointedCell.SetSprite(_buildData.BaseSprite);
+                if(_pointedCell?.Type == CellType.Empty)
+                    _pointedCell?.SetSprite(_buildData.BaseSprite);
             }
             else 
-                _pointedCell.Selector.Activate();
-            
+                _pointedCell?.SetSelector(true);
         }
         
         public void RemoveHighlight(OnCellMouseExitEvent onCellMouseExitEvent)
         {
             if (_buildData != null)
-                _pointedCell.SetBaseSprite();
-            else if (_pointedCell == onCellMouseExitEvent.Cell) 
-                onCellMouseExitEvent.Cell.Selector.Deactivate();
+                _pointedCell?.SetBaseSprite();
+            else if (_pointedCell == onCellMouseExitEvent.Cell)
+                onCellMouseExitEvent.Cell.SetSelector(false);
             
             _pointedCell = null;
         }
-
+        
         public void StartBuild()
         {
             HighlightEmptyCells();
@@ -71,10 +64,13 @@ namespace GamePlayServices
 
         public void Dispose()
         {
-            _eventBus.Unsubscribe<OnGridInitializedEvent>(AssignGrid);
             _eventBus.Unsubscribe<OnCellMouseEnterEvent>(Highlight);
             _eventBus.Unsubscribe<OnCellMouseExitEvent>(RemoveHighlight);
-            _eventBus.Unsubscribe<OnStartBuildingCellEvent>(SetCellForBuild);
+        }
+        
+        private void Initialize(OnCellsGridCreatedEvent onCellsGridCreatedEvent)
+        {
+            _cells = onCellsGridCreatedEvent.CellsGrid.Cells;
         }
         
         private void HighlightEmptyCells()
@@ -82,7 +78,7 @@ namespace GamePlayServices
             foreach (Cell cell in _cells)
             {
                 if(cell.Type == CellType.Empty)
-                    cell.Selector.Activate();
+                    cell.SetSelector(true);
             }
         }
 
@@ -90,18 +86,18 @@ namespace GamePlayServices
         {
             foreach (Cell cell in _cells)
             {
-                cell.Selector.Deactivate();
+                cell.SetSelector(false);
             }
         }
         
-        private void SetCellForBuild(OnStartBuildingCellEvent onStartBuildingCellEvent)
+        private void PrepareForBuild(OnStartBuildingCellEvent onStartBuildingCellEvent)
         {
             _buildData = _staticData.ForCell(onStartBuildingCellEvent.CellType);
         }
         
-        private void AssignGrid(OnGridInitializedEvent onGridInitializedEvent)
+        private void ClearCellForBuild()
         {
-            _cells = onGridInitializedEvent.CellsGrid.Cells;
+            _buildData = null;
         }
     }
 }

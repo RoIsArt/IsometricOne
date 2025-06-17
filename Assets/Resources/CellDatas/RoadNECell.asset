@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24f3416a4631a764099d27efde387b2d, type: 3}
+  m_Name: RoadNECell
+  m_EditorClassIdentifier: 
+  Type: 2
+  Prefab: {fileID: 7867326642778994950, guid: 1db45288771a9d74f8a502ff541e33a6, type: 3}
+  BaseSprite: {fileID: 21300000, guid: 8cffbfe0f70b95640ae588d7e8e94e82, type: 3}
+  ConnectingSides:
+  - sideName: 0
+    isConnected: 0
+  - sideName: 2
+    isConnected: 0
+  MinePerSecond: 2

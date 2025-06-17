@@ -44,7 +44,7 @@ public class RouteConstructor : IDisposable
         _eventBus.Subscribe<OnCellBuildedEvent>(AddInRoute);
     }
 
-    public ConnectingCell LastCellInRoute { get { return _route.Last; } }
+    public Cell LastCellInRoute { get { return _route.Last; } }
 
     public void AddInRoute(OnCellBuildedEvent onCellBuildedEvent)
     {
@@ -53,8 +53,8 @@ public class RouteConstructor : IDisposable
         var unconnectedSide = GetUnconnectedSide(LastCellInRoute);
         var cellForAttached = GetNextCellForAttach(unconnectedSide);
 
-        if(cellForAttached is ConnectingCell cell)
-            CheckNextCell(cell, unconnectedSide);
+        if(cellForAttached)
+            CheckNextCell(cellForAttached, unconnectedSide);
     }
 
     public void Dispose()
@@ -62,7 +62,7 @@ public class RouteConstructor : IDisposable
         _eventBus.Unsubscribe<OnCellBuildedEvent>(AddInRoute);
     }
 
-    private ConnectingSide GetUnconnectedSide(ConnectingCell cell)
+    private ConnectingSide GetUnconnectedSide(Cell cell)
     {
         return cell.GetUnconnetSide();
     }
@@ -70,10 +70,10 @@ public class RouteConstructor : IDisposable
     private Cell GetNextCellForAttach(ConnectingSide connectingSide)
     {
         var nextCellIndex = LastCellInRoute.Index + _offsetToSide[connectingSide.SideName];
-        return _cellsGrid[nextCellIndex];
+        return _cellsGrid.GetCell(nextCellIndex);
     }
 
-    private void CheckNextCell(ConnectingCell cellForAttached, ConnectingSide connectingSide)
+    private void CheckNextCell(Cell cellForAttached, ConnectingSide connectingSide)
     {
         if (cellForAttached == null || !_connectableTypes.Contains(cellForAttached.Type)) return;
 
@@ -85,21 +85,21 @@ public class RouteConstructor : IDisposable
 
             var nextSide = GetUnconnectedSide(cellForAttached);
             var nextCellForAttached = GetNextCellForAttach(nextSide);
-            if (nextCellForAttached is ConnectingCell cell)
+            if (nextCellForAttached)
             {
-                if (!CheckReadyRoute(cell)) CheckNextCell(cell, nextSide);                    
+                if (!CheckReadyRoute(nextCellForAttached)) CheckNextCell(nextCellForAttached, nextSide);                    
             }
         }
     }
 
-    private void Attach(ConnectingCell to, ConnectingCell cell, ConnectingSide connectSide)
+    private void Attach(Cell to, Cell cell, ConnectingSide connectSide)
     {
         to.GetConnectingSide(connectSide.SideName).Connect();
         cell.GetConnectingSide(_oppositeSide[connectSide.SideName]).Connect();
         _route.Add(cell);
     }
 
-    private bool CheckReadyRoute(ConnectingCell cellForAttached)
+    private bool CheckReadyRoute(Cell cellForAttached)
     {
         if (cellForAttached == _route.First)
         {

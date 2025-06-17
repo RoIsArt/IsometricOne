@@ -1,4 +1,3 @@
-using System.Collections;
 using Infrastructure.GameStates;
 using Infrastructure.Services;
 using UnityEngine;
@@ -22,16 +21,6 @@ namespace Infrastructure.Game
         private void OnDestroy()
         {
             _container.Dispose();
-        }
-
-        public Coroutine StartRoutine(IEnumerator routine)
-        {
-            return StartCoroutine(routine);
-        }
-
-        public void StopRoutine(Coroutine routine)
-        {
-            StopCoroutine(routine);
         }
     }
 }

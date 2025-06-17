@@ -5,11 +5,11 @@ using Properties;
 
 public class Route
 {
-    private List<ConnectingCell> _cells;
+    private List<Cell> _cells;
     private Property<int> _miningPerSecond;
     private bool _isReady;
 
-    public Route(ConnectingCell firstCell)
+    public Route(Cell firstCell)
     {
         _cells = new();
         _miningPerSecond = new Property<int>(0);
@@ -18,18 +18,18 @@ public class Route
         _cells.Add(firstCell);
     }
 
-    public List<ConnectingCell> Cells {  get { return _cells; } }
+    public List<Cell> Cells {  get { return _cells; } }
     public Property<int> MiningPerSecond { get { return _miningPerSecond; } }
-    public ConnectingCell First {  get { return _cells.First(); } }
-    public ConnectingCell Last {  get { return _cells.Last(); } }
+    public Cell First {  get { return _cells.First(); } }
+    public Cell Last {  get { return _cells.Last(); } }
     public bool IsReady { get { return _isReady; } }
 
-    public void Add(ConnectingCell cell)
+    public void Add(Cell cell)
     {
         _cells.Add(cell);
     }
 
-    public void Remove(ConnectingCell cell)
+    public void Remove(Cell cell)
     {
         if(_cells.Contains(cell))
         {

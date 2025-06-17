@@ -1,26 +1,37 @@
-using System.Collections;
+using Cells;
 using UnityEngine;
 
-public class Miner
+public class Miner : IMiner
 {
-    private readonly Wallet _wallet;
+    private readonly Cooldown _mineCooldown = new(1);
+    private Cell[,] _cells;
+    private int _totalCount;
+    private int _minePerSecond;
 
-    private Route _route;
-    public Miner(Wallet wallet)
+    public void Initialize(Cell[,] cells)
     {
-        _wallet = wallet;
-    }
-
-    public void SetRoute(Route route)
-    {
-        _route = route;
+        _cells = cells;
     }
     
-    public IEnumerator Mine()
+    public void Mine()
     {
-        _wallet.Total.Value += _route.MiningPerSecond.Value;
-        Debug.Log(_wallet.Total.Value);
+        if (_mineCooldown.IsReady)
+        {
+            _totalCount += _minePerSecond;
+            _mineCooldown.Reset();
+        }
+    }
 
-        yield return new WaitForSeconds(1);
+    public void Refresh()
+    {
+        _minePerSecond = 0;
+        
+        foreach (Cell cell in _cells)
+        {
+            if (cell)
+            {
+                _minePerSecond += cell.MinePerSecond;
+            }
+        }
     }
 }

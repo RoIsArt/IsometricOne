@@ -9,7 +9,6 @@ namespace Infrastructure.GameStates
 {
     public class BootstrapState : IState
     {
-        private const string Initial = "Initial";
         private readonly GameStateMachine _gameStateMachine;
         private readonly SceneLoader _sceneLoader;
         private readonly ICoroutineRunner _coroutineRunner;
@@ -28,7 +27,7 @@ namespace Infrastructure.GameStates
         
         public void Enter()
         {
-            _sceneLoader.Load(Initial, onLoaded: EnterLoadLevel);
+            _sceneLoader.Load(SceneNames.InitialScene, onLoaded: EnterLoadLevel);
         }
 
         public void Exit()
@@ -37,11 +36,11 @@ namespace Infrastructure.GameStates
         }
 
         private void EnterLoadLevel() => 
-            _gameStateMachine.Enter<LoadLevelState, string>("GameplayScene");
+            _gameStateMachine.Enter<LoadLevelState, string>(SceneNames.GameplayScene);
 
         private void RegisterServices()
         {
-            _container.RegisterInstance<ICoroutineRunner>(_coroutineRunner);
+            _container.RegisterInstance(_coroutineRunner);
             _container.RegisterGlobal<IAssetProvider, AssetProvider>(Lifecycle.Singleton);
             _container.RegisterGlobal<IUIFactory, UIFactory>(Lifecycle.Singleton);
             _container.RegisterGlobal<ISceneLoader, SceneLoader>(Lifecycle.Singleton);

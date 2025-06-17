@@ -1,5 +1,6 @@
 using System;
 using DatasAndConfigs;
+using GroundState;
 using UnityEngine;
 
 namespace Cells
@@ -9,56 +10,53 @@ namespace Cells
         private GridConfig _config;
         private Cell[,] _cells;
 
+        private IUpdatableGridState _currentState;
+
         public void Construct(GridConfig config)
         {
             _config = config;
             _cells = new Cell[_config.GridSize.x, _config.GridSize.y];
         }
 
+        private void Update()
+        {
+            _currentState?.Update();
+        }
+
         public Cell[,] Cells => _cells;
 
-        public Cell this[Vector2Int index]
-        {
-            get
-            {
-                if (!CheckOutOfRangeIndex(index))
-                {
-                    return _cells[index.x, index.y];
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
+        public void SetState(IUpdatableGridState updatableGridState) => 
+            _currentState = updatableGridState;
 
-        public void AddCellInGrid(Cell cell)
+        public void AddCell(Cell cell)
         {
             var index = cell.Index;
-            if(_cells[index.x, index.y] != null)
-                GameObject.Destroy(_cells[index.x, index.y].gameObject);
-            _cells[index.x, index.y] = cell;
+            if (_cells[index.x, index.y] != null)
+            {
+                var position = _cells[index.x, index.y].transform.position;
+                cell.transform.position = position;
+                RemoveCell(_cells[index.x, index.y]);
+            }
+            else
+                cell.transform.position = GetCellPosition(index);
             
-            PlacedCellOnPosition(cell.gameObject, index);
+            cell.transform.parent = this.transform;
+            _cells[index.x, index.y] = cell;
         }
 
-        private void PlacedCellOnPosition(GameObject cell, Vector2Int index)
+        private void RemoveCell(Cell cell)
         {
-            if (CheckOutOfRangeIndex(index))
-            {
-                throw new ArgumentOutOfRangeException($"{index} out of range grid size");
-            }
-        
-            cell.transform.position = GetCellPosition(index);
+            Destroy(cell.gameObject);
         }
-        private bool CheckOutOfRangeIndex(Vector2Int index)
-        {
-            return index.x < 0 || index.x >= _cells.GetLength(0) 
-                               || index.y < 0 || index.y >= _cells.GetLength(1);
-        }
+
         private Vector2 GetCellPosition(Vector2Int indexInArray)
         {
             return indexInArray.x * _config.RightBasis + indexInArray.y * _config.LeftBasis;
+        }
+
+        public Cell GetCell(Vector2Int index)
+        {
+            return _cells[index.x, index.y];
         }
     }
 }

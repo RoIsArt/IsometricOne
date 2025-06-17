@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1306774844820074467}
   - component: {fileID: 3666342388714400947}
-  - component: {fileID: 4472686905547106243}
   - component: {fileID: -229610080278683035}
   - component: {fileID: -7577405098747948248}
   - component: {fileID: -6645620303760052828}
+  - component: {fileID: 3440980659722432423}
   m_Layer: 0
   m_Name: EmptyCell
   m_TagString: Untagged
@@ -79,9 +79,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -962498507
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1005345640, guid: 7bf9981770ee09b47a722da421ddbb22, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -89,22 +89,9 @@ SpriteRenderer:
   m_Size: {x: 64, y: 32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4472686905547106243
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6065105261657163829}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad37e3e33019c7048b7c205bcac3c2e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Selector: {fileID: 8396289770488012579}
 --- !u!60 &-229610080278683035
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -181,6 +168,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _selector: {fileID: 8396289770488012579}
+--- !u!114 &3440980659722432423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6065105261657163829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 480739ad5948a5a4ebc4a2ca11c69f50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8396289770488012579
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,9 +254,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -962498507
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 1
-  m_Sprite: {fileID: 82825454, guid: 7bf9981770ee09b47a722da421ddbb22, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7e4cd8520bb721a40a1c1ced9d80109e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

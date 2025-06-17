@@ -1,8 +1,9 @@
-﻿using GameEvents;
+﻿using AssetManagment;
+using Cells;
+using GameEvents;
 using GamePlayServices;
 using GroundState;
 using Infrastructure.Factories;
-using Infrastructure.Game;
 using Infrastructure.Services;
 using UI;
 using UnityEngine;
@@ -13,47 +14,46 @@ namespace Infrastructure.SceneManagment
     {
         private DiContainer _container;
         private IUIFactory _uiFactory;
-
-        private GroundStateMachine _groundStateMachine;
+        private IEventBus _eventBus;
 
         public override void ConstructScene(DiContainer container)
         {
             InitializeDependencies(container);
-            InitializePrefabs();
+            InitGameWorld();
         }
 
         private void InitializeDependencies(DiContainer container)
         {
             _container = container;
             _uiFactory = container.Resolve<IUIFactory>();
+            _eventBus = container.Resolve<IEventBus>();
             
             _container.StartScope();
             _container.RegisterScene<ICellFactory, CellFactory>(Lifecycle.Singleton);
             _container.RegisterScene<IGridFactory, GridFactory>(Lifecycle.Singleton);
             _container.RegisterScene<IHighlighter, Highlighter>(Lifecycle.Singleton);
             _container.RegisterScene<IBuilder, Builder>(Lifecycle.Singleton);
+            _container.RegisterScene<IMiner, Miner>(Lifecycle.Singleton);
         }
 
-        private void InitializePrefabs()
+        private void InitGameWorld()
         {
-            IEventBus eventBus = _container.Resolve<IEventBus>();
-            GameObject hud = _uiFactory.CreateHud();
-            hud.GetComponent<HUD>().Construct(eventBus);
-
-            _groundStateMachine = new GroundStateMachine(
-                eventBus,
-                _container.Resolve<IGridFactory>(),
+            GameObject grid = _container.Resolve<IGridFactory>().Create();
+            GridStateMachine gridStateMachine = new GridStateMachine(
+                grid.GetComponent<CellsGrid>(),
                 _container.Resolve<IHighlighter>(),
-                _container.Resolve<IBuilder>(),
-                _container.Resolve<ICoroutineRunner>());
+                _container.Resolve<IMiner>(),
+                _container.Resolve<IBuilder>());
             
-            _groundStateMachine.Enter<InitialState>();
+            GameObject hud = _uiFactory.CreateHud();
+            hud.GetComponent<HUD>().Construct(_eventBus, gridStateMachine);
+            
+            gridStateMachine.Enter<InitialState>();
         }
 
         private void OnDestroy()
         {
             _container.EndScope();
-            _groundStateMachine.Dispose();
         }
     }
 }

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7d654f7a1b28244dad9ea7120f88605, type: 3}
   m_Name: GridConfig
   m_EditorClassIdentifier: 
-  GridSize: {x: 3, y: 3}
-  SourcePosition: {x: 2, y: 2}
+  GridSize: {x: 10, y: 10}
   CellSize: {x: 64, y: 32}
+  ShiftX: 7
+  ShiftY: 3

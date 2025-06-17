@@ -1,6 +1,8 @@
 using Cells;
 using GameEvents;
+using GroundState;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace UI
@@ -8,26 +10,29 @@ namespace UI
     [RequireComponent(typeof(Button))]
     public class BuildButton : MonoBehaviour
     {
-        [SerializeField] private Button _button;
-        [SerializeField] private CellType _cellTypeForBuild;
+        [FormerlySerializedAs("_button")] [SerializeField] private Button button;
+        [FormerlySerializedAs("_cellTypeForBuild")] [SerializeField] private CellType cellTypeForBuild;
+        private GridStateMachine _gridStateMachine;
         
         private IEventBus _eventBus;
 
-        public void Construct(IEventBus eventBus)
+        public void Construct(IEventBus eventBus, GridStateMachine gridStateMachine)
         {
             _eventBus = eventBus;
+            _gridStateMachine = gridStateMachine;
 
-            _button.onClick.AddListener(OnClick);
+            button.onClick.AddListener(OnClick);
         }
 
         private void OnClick()    
         {
-            _eventBus.Invoke<OnStartBuildingCellEvent>(new OnStartBuildingCellEvent(_cellTypeForBuild));
+            _eventBus.Invoke(new OnStartBuildingCellEvent(cellTypeForBuild));
+            _gridStateMachine.Enter<BuildingState>();
         }
 
         private void OnDestroy()
         {
-            _button.onClick.RemoveListener(OnClick);
+            button.onClick.RemoveListener(OnClick);
         }
     }
 }

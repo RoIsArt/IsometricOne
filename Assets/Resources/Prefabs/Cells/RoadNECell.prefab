@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: -962498507
   m_SortingLayer: 1
   m_SortingOrder: 1
-  m_Sprite: {fileID: 82825454, guid: 7bf9981770ee09b47a722da421ddbb22, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7e4cd8520bb721a40a1c1ced9d80109e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -97,10 +97,10 @@ GameObject:
   m_Component:
   - component: {fileID: 5501694411108847922}
   - component: {fileID: 8325913413576841117}
-  - component: {fileID: 8232424069871900676}
   - component: {fileID: -752598357429364398}
   - component: {fileID: -1507217030671788913}
   - component: {fileID: 4357948535439274342}
+  - component: {fileID: 3427362746413742549}
   m_Layer: 0
   m_Name: RoadNECell
   m_TagString: Untagged
@@ -168,7 +168,7 @@ SpriteRenderer:
   m_SortingLayerID: -962498507
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1149048609, guid: 7bf9981770ee09b47a722da421ddbb22, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8cffbfe0f70b95640ae588d7e8e94e82, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -179,19 +179,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &8232424069871900676
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7867326642778994950}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33ae27c806345414abff0ffebe184cfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Selector: {fileID: 6219987113536067507}
 --- !u!60 &-752598357429364398
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -268,3 +255,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _selector: {fileID: 6219987113536067507}
+--- !u!114 &3427362746413742549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7867326642778994950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 480739ad5948a5a4ebc4a2ca11c69f50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
