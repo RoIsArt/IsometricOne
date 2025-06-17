@@ -13,62 +13,74 @@ namespace GamePlayServices
         private readonly ICellFactory _cellFactory;
         private readonly IEventBus _eventBus;
         private readonly IStaticDataService _staticData;
-        private CellsGrid _cellsGrid;
-
-        private Cell[,] _cells;
+        private readonly IPointer _pointer;
+        
         private CellData _buildData;
+        
         private Cell _pointedCell;
-    
+        private Cell _planedCell;
+        
+
         [Inject]
-        public Builder(ICellFactory cellFactory, IEventBus eventBus, IStaticDataService staticData)
+        public Builder(ICellFactory cellFactory, 
+            IEventBus eventBus, 
+            IStaticDataService staticData, 
+            IPointer pointer)
         {
             _cellFactory = cellFactory;
             _eventBus = eventBus;
             _staticData = staticData;
+            _pointer = pointer;
 
             _eventBus.Subscribe<OnStartBuildingCellEvent>(PrepareForBuilding);
-            _eventBus.Subscribe<OnCellMouseEnterEvent>(SetPointedCell);
-            _eventBus.Subscribe<OnCellBuildedEvent>(CompleteBulding);
-            _eventBus.Subscribe<OnCellsGridCreatedEvent>(DefineGrid);
         }
 
-        public Cell Build()
-        { 
-            var cell = _cellFactory.Create(_buildData.Type, _pointedCell.Index)
-                .GetComponent<Cell>();
-            _cellsGrid.AddCell(cell);
+        public void Plan()
+        {
+            Cell pointedCell = _pointer.GetPointedCell();
             
-            _eventBus.Invoke(new OnCellBuildedEvent(cell));
-            return cell;
+            if (pointedCell)
+            {
+                if (_planedCell != pointedCell)
+                    PlanCell(pointedCell);
+            }
+            else if(_planedCell)
+                ResetPlan();
+        }
+
+        public void Build()
+        {
+            if(_planedCell == null) return;
+            
+            _cellFactory.Create(_buildData.Type, _planedCell.Index);
+            CompleteBulding();
         }
 
         public void Dispose()
         {
             _eventBus.Unsubscribe<OnStartBuildingCellEvent>(PrepareForBuilding);
-            _eventBus.Unsubscribe<OnCellMouseEnterEvent>(SetPointedCell);
-            _eventBus.Unsubscribe<OnCellBuildedEvent>(CompleteBulding);
-            _eventBus.Unsubscribe<OnCellsGridCreatedEvent>(DefineGrid);
         }
 
-        private void DefineGrid(OnCellsGridCreatedEvent onCellsGridCreatedEvent)
-        {
-            _cellsGrid = onCellsGridCreatedEvent.CellsGrid;
-        }
-
-        private void PrepareForBuilding(OnStartBuildingCellEvent onStartBuildingCellEvent)
-        {
+        private void PrepareForBuilding(OnStartBuildingCellEvent onStartBuildingCellEvent) => 
             _buildData = _staticData.ForCell(onStartBuildingCellEvent.CellType);
-        }
 
-        private void SetPointedCell(OnCellMouseEnterEvent onCellMouseEnterEvent)
-        {
-            _pointedCell = onCellMouseEnterEvent.Cell;
-        }
-
-        private void CompleteBulding(OnCellBuildedEvent onCellBuildedEvent)
+        private void CompleteBulding()
         {
             _buildData = null;
-            _eventBus.Invoke(new OnCellMouseEnterEvent(null));
+            _planedCell = null;
+        }
+
+        private void PlanCell(Cell pointedCell)
+        {
+            _planedCell?.SetBaseSprite();
+            _planedCell = pointedCell.Type == CellType.Empty ? pointedCell : null;
+            _planedCell?.SetSprite(_buildData.BaseSprite);
+        }
+
+        private void ResetPlan()
+        {
+            _planedCell?.SetBaseSprite();
+            _planedCell = null;
         }
     }
 }

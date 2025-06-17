@@ -1,4 +1,5 @@
 ﻿using Cells;
+using GamePlayServices;
 
 namespace GroundState
 {
@@ -6,11 +7,13 @@ namespace GroundState
     {
         private readonly Cell[,] _cells;
         private readonly IMiner _miner;
+        private readonly IHighlighter _highlighter;
 
-        public MiningState(Cell[,] cells, IMiner miner)
+        public MiningState(Cell[,] cells, IMiner miner, IHighlighter highlighter)
         {
             _cells = cells;
             _miner = miner;
+            _highlighter = highlighter;
         }
         
         public void Enter()
@@ -21,6 +24,7 @@ namespace GroundState
 
         public void Update()
         {
+            _highlighter.Highlight();
             _miner.Mine();
         }
         

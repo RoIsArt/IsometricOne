@@ -48,8 +48,6 @@ public class RouteConstructor : IDisposable
 
     public void AddInRoute(OnCellBuildedEvent onCellBuildedEvent)
     {
-        if (_route.IsReady || _connectableTypes.Contains(onCellBuildedEvent.Cell.Type)) return;
-
         var unconnectedSide = GetUnconnectedSide(LastCellInRoute);
         var cellForAttached = GetNextCellForAttach(unconnectedSide);
 

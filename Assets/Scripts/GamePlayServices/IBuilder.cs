@@ -4,6 +4,7 @@ namespace GamePlayServices
 {
     public interface IBuilder
     {
-        Cell Build();
+        void Plan();
+        void Build();
     }
 }

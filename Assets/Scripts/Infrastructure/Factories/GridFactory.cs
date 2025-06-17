@@ -30,36 +30,51 @@ namespace Infrastructure.Factories
 
         public GameObject Create()
         {
-            GameObject grid = _assetProvider.Instantiate(AssetPath.GridPath);
-            CellsGrid cellsGrid = grid.GetComponent<CellsGrid>();
-            cellsGrid.Construct(_staticDataService.ForGrid());
-            _eventBus.Invoke(new OnCellsGridCreatedEvent(cellsGrid));
-            
-            GridConfig gridConfig = _staticDataService.ForGrid();
-            Vector2Int gridSize = gridConfig.GridSize;
-            Vector2Int cellSize = gridConfig.CellSize;
-            Vector2Int sourcePosition = new Vector2Int(
-                Random.Range(1, gridConfig.GridSize.x - 1),
-                Random.Range(1, gridConfig.GridSize.y - 1));
+            GridConfig config = _staticDataService.ForGrid();
+            GameObject grid = CreateGrid(config);
+            Vector2Int sourcePosition = GetSourcePosition(config);
 
-            for (int x = 0; x < gridSize.x; x++)
-                for (int y = 0; y < gridSize.y; y++)
-                {
-                    CellType type;
-                    if (x == sourcePosition.x && y == sourcePosition.y)
-                        type = CellType.Source;
-                    else
-                        type = CellType.Empty;
-                        
-                    var cell = _cellFactory.Create(type, new Vector2Int(x, y));
-                    cellsGrid.AddCell(cell.GetComponent<Cell>());
-                }
+            InitializeGrid(config, sourcePosition);
 
             Vector3 gridPos = grid.transform.position;
-            gridPos.y += gridConfig.Shift.y;
+            gridPos.y += config.Shift.y;
             grid.transform.position = gridPos;
             
             return grid;
+        }
+        
+        private GameObject CreateGrid(GridConfig config)
+        {
+            GameObject gridObj = _assetProvider.Instantiate(AssetPath.GridPath);
+            CellsGrid cellsGrid = gridObj.GetComponent<CellsGrid>();
+            cellsGrid.Construct(config);
+            _cellFactory.SetGrid(cellsGrid);
+            
+            
+            
+            _eventBus.Invoke(new OnCellsGridCreatedEvent(cellsGrid));
+            return gridObj;
+        }
+
+        private static Vector2Int GetSourcePosition(GridConfig config)
+        {
+            return new Vector2Int(
+                Random.Range(1, config.GridSize.x - 1),
+                Random.Range(1, config.GridSize.y - 1));
+        }
+        
+        private void InitializeGrid(GridConfig config, Vector2Int sourcePosition)
+        {
+            for (int x = 0; x < config.GridSize.x; x++)
+            {
+                for (int y = 0; y < config.GridSize.y; y++)
+                {
+                    if (x == sourcePosition.x && y == sourcePosition.y)
+                        _cellFactory.Create(CellType.Source, new Vector2Int(x, y));
+                    else
+                        _cellFactory.Create(CellType.Empty, new Vector2Int(x, y));
+                }
+            }
         }
     }
 }

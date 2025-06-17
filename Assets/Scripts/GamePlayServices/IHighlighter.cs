@@ -6,8 +6,7 @@ namespace GamePlayServices
 {
     public interface IHighlighter
     {
-        void Highlight(OnCellMouseEnterEvent onCellMouseEnterEvent);
-        void RemoveHighlight(OnCellMouseExitEvent onCellMouseExitEvent);
+        void Highlight();
         void StartBuild();
         void EndBuild();
     }

@@ -245,10 +245,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f91bb6df5514ef747832489dc1057b58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 100
-  edgeThreshold: 200
-  minBounds: {x: -180, y: -90}
-  maxBounds: {x: 180, y: 90}
+  moveSpeed: 200
+  smoothingFactor: 5
+  minBounds: {x: -351, y: -171}
+  maxBounds: {x: 351, y: 171}
 --- !u!1001 &1987643665
 PrefabInstance:
   m_ObjectHideFlags: 0

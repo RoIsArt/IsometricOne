@@ -7,33 +7,65 @@ namespace CameraManagment
     {
         [Header("Movement Settings")]
         [SerializeField] private float moveSpeed = 5f;
+        [SerializeField] private float smoothingFactor = 5f; 
 
         [Header("Camera Bounds")]
         [SerializeField] private Vector2 minBounds;
         [SerializeField] private Vector2 maxBounds;
-        
+
+        private Vector3 _targetPosition;
+        private Vector3 _currentVelocity; 
+
+        private void Start()
+        {
+            _targetPosition = transform.position;
+        }
 
         private void Update()
         {
-            Vector3 moveDirection = Vector3.zero;
-            
-            float horizontal = Input.GetAxis("Horizontal");
-            float vertical = Input.GetAxis("Vertical"); 
-            
-            if (horizontal > 0.9) moveDirection.x += horizontal;
-            else if (horizontal < 0.9) moveDirection.x += horizontal;
+            HandleInput();
+            ApplyMovement();
+            ClampPosition();
+        }
 
-            if (vertical > 0.9) moveDirection.y += vertical;
-            else if (vertical < 0.9) moveDirection.y += vertical;
+        private void HandleInput()
+        {
+            Vector2 input = new Vector2(
+                Input.GetAxis("Horizontal"),
+                Input.GetAxis("Vertical")
+            );
             
-            if (moveDirection.magnitude > 0) moveDirection.Normalize();
-            
-            Vector3 newPosition = transform.position + moveDirection * (moveSpeed * Time.deltaTime);
-            
-            newPosition.x = Mathf.Clamp(newPosition.x, minBounds.x, maxBounds.x);
-            newPosition.y = Mathf.Clamp(newPosition.y, minBounds.y, maxBounds.y);
+            if (input.magnitude > 1f)
+            {
+                input.Normalize();
+            }
 
-            transform.position = newPosition;
+            _targetPosition += (Vector3)input * (moveSpeed * Time.deltaTime);
+        }
+
+        private void ApplyMovement()
+        {
+            transform.position = Vector3.SmoothDamp(
+                transform.position,
+                _targetPosition,
+                ref _currentVelocity,
+                1f / smoothingFactor
+            );
+        }
+
+        private void ClampPosition()
+        {
+            _targetPosition.x = Mathf.Clamp(_targetPosition.x, minBounds.x, maxBounds.x);
+            _targetPosition.y = Mathf.Clamp(_targetPosition.y, minBounds.y, maxBounds.y);
+        }
+        
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireCube(
+                new Vector3((minBounds.x + maxBounds.x) * 0.5f, (minBounds.y + maxBounds.y) * 0.5f, 0f),
+                new Vector3(maxBounds.x - minBounds.x, maxBounds.y - minBounds.y, 1f)
+            );
         }
     }
 }

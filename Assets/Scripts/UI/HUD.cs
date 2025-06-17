@@ -7,11 +7,13 @@ namespace UI
 {
     public class HUD :MonoBehaviour
     {
-        [FormerlySerializedAs("_builderPanel")] [SerializeField] private BuilderPanel builderPanel;
+        [SerializeField] private BuilderPanel builderPanel;
+        [SerializeField] private MinePanel minePanel;
         
         public void Construct(IEventBus eventBus, GridStateMachine gridStateMachine)
         {
             builderPanel.Construct(eventBus, gridStateMachine);
+            minePanel.Construct(eventBus);
         }
     }
 }

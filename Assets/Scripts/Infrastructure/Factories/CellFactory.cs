@@ -1,4 +1,5 @@
 using Cells;
+using DatasAndConfigs;
 using GameEvents;
 using Infrastructure.Services;
 using UnityEngine;
@@ -9,6 +10,7 @@ namespace Infrastructure.Factories
     {
         private readonly IEventBus _eventBus;
         private readonly IStaticDataService _staticDataService;
+        private CellsGrid _grid;
         
         [Inject]
         public CellFactory(IStaticDataService staticDataService, IEventBus eventBus)
@@ -16,13 +18,22 @@ namespace Infrastructure.Factories
             _staticDataService = staticDataService;
             _eventBus = eventBus;
         }
+
+        public void SetGrid(CellsGrid grid)
+        {
+            _grid = grid;
+        }
         
         public GameObject Create(CellType type, Vector2Int index)
         {
-            var data = _staticDataService.ForCell(type);
-            var cell = GameObject.Instantiate(data.Prefab);
-            cell.GetComponent<Cell>().Construct(data, index, _eventBus);
-            return cell;
+            CellData data = _staticDataService.ForCell(type);
+            GameObject cellObj = GameObject.Instantiate(data.Prefab);
+            Cell cell = cellObj.GetComponent<Cell>();
+            
+            cell.Construct(data, index, _eventBus);
+            _grid.AddCell(cell);
+            
+            return cellObj;
         }
     }
 }

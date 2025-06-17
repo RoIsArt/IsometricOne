@@ -31,6 +31,7 @@ namespace Infrastructure.SceneManagment
             _container.StartScope();
             _container.RegisterScene<ICellFactory, CellFactory>(Lifecycle.Singleton);
             _container.RegisterScene<IGridFactory, GridFactory>(Lifecycle.Singleton);
+            _container.RegisterScene<IPointer, Pointer>(Lifecycle.Singleton);
             _container.RegisterScene<IHighlighter, Highlighter>(Lifecycle.Singleton);
             _container.RegisterScene<IBuilder, Builder>(Lifecycle.Singleton);
             _container.RegisterScene<IMiner, Miner>(Lifecycle.Singleton);

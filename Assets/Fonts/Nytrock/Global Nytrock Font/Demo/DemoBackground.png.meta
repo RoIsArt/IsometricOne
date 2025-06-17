@@ -1,10 +1,17 @@
 fileFormatVersion: 2
-guid: 58f4621e6238b2049ac69eb0530e56d2
+guid: aa569ced239fce141b4035a55b747440
+AssetOrigin:
+  serializedVersion: 1
+  productId: 322855
+  packageName: Free retro pixel font - GNF
+  packageVersion: 1.0
+  assetPath: Assets/Nytrock/Global Nytrock Font/Demo/DemoBackground.png
+  uploadId: 762769
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5631841298720852791
-    second: BackPanel 1_0
+      213: 1647861230519549677
+    second: DemoBackground_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +58,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 1
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -75,7 +82,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -110,6 +117,32 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
     buildTarget: WindowsStoreApps
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -126,45 +159,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BackPanel 1_0
+      name: DemoBackground_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 54
-        height: 126
+        width: 795
+        height: 480
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 365b688cb28b71a45a0276b8534927e5
-      internalID: -70934800
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BackPanel 1_1
-      rect:
-        serializedVersion: 2
-        x: 54
-        y: 109
-        width: 54
-        height: 17
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e909aab72239d2b4992d8ffc1275ec4c
-      internalID: 1273906504
+      spriteID: dee7144fe016ed610800000000000000
+      internalID: 1647861230519549677
       vertices: []
       indices: 
       edges: []
@@ -173,7 +184,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -183,8 +194,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      BackPanel 1_0: -70934800
-      BackPanel 1_1: 1273906504
+      DemoBackground_0: 1647861230519549677
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

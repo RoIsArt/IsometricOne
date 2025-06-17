@@ -20,7 +20,7 @@ namespace GroundState
         {
             _grid = grid;
 
-            IUpdatableGridState miningState = new MiningState(_grid.Cells, miner);
+            IUpdatableGridState miningState = new MiningState(_grid.Cells, miner, highlighter);
             
             _states = new Dictionary<Type, IGridState>()
             {

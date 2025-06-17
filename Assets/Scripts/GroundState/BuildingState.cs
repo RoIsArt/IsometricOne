@@ -29,6 +29,7 @@ namespace GroundState
         public void Update()
         {
             _baseState.Update();
+            _builder.Plan();
 
             if (Input.GetMouseButtonDown(0))
             {

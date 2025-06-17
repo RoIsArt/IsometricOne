@@ -9,68 +9,70 @@ namespace GamePlayServices
 {
     public class Highlighter : IHighlighter, IDisposable
     {
-        private readonly IStaticDataService _staticData;
         private readonly IEventBus _eventBus;
+        private readonly IPointer _pointer;
         private Cell[,] _cells;
 
-        private Cell _pointedCell;
-        private CellData _buildData;
+        private Cell _highlightedCell;
+        private bool _isBuilding;
 
         [Inject]
-        public Highlighter(IStaticDataService staticData, IEventBus eventBus)
+        public Highlighter(IEventBus eventBus, IPointer pointer)
         {
-            _staticData = staticData;
             _eventBus = eventBus;
+            _pointer = pointer;
             
-            _eventBus.Subscribe<OnCellMouseEnterEvent>(Highlight);
-            _eventBus.Subscribe<OnCellMouseExitEvent>(RemoveHighlight);
             _eventBus.Subscribe<OnCellsGridCreatedEvent>(Initialize);
-            _eventBus.Subscribe<OnStartBuildingCellEvent>(PrepareForBuild);
         }
         
-        public void Highlight(OnCellMouseEnterEvent onCellMouseEnterEvent)
+        public void Highlight()
         {
-            _pointedCell = onCellMouseEnterEvent.Cell;
-
-            if (_buildData != null)
-            {
-                if(_pointedCell?.Type == CellType.Empty)
-                    _pointedCell?.SetSprite(_buildData.BaseSprite);
-            }
-            else 
-                _pointedCell?.SetSelector(true);
-        }
-        
-        public void RemoveHighlight(OnCellMouseExitEvent onCellMouseExitEvent)
-        {
-            if (_buildData != null)
-                _pointedCell?.SetBaseSprite();
-            else if (_pointedCell == onCellMouseExitEvent.Cell)
-                onCellMouseExitEvent.Cell.SetSelector(false);
+            if(_isBuilding) return;
             
-            _pointedCell = null;
+            Cell pointedCell = _pointer.GetPointedCell();
+            
+            if (pointedCell)
+            {
+                if (_highlightedCell != pointedCell)
+                    MoveSelector(pointedCell);
+            }
+            else if(_highlightedCell)
+                ResetSelector();
         }
         
         public void StartBuild()
         {
+            _isBuilding = true;
             HighlightEmptyCells();
         }
 
         public void EndBuild()
         {
             ClearHighlights();
-            ClearCellForBuild();
+            _isBuilding = false;
         }
 
         public void Dispose()
         {
-            _eventBus.Unsubscribe<OnCellMouseEnterEvent>(Highlight);
-            _eventBus.Unsubscribe<OnCellMouseExitEvent>(RemoveHighlight);
+            _eventBus.Unsubscribe<OnCellsGridCreatedEvent>(Initialize);
         }
         
         private void Initialize(OnCellsGridCreatedEvent onCellsGridCreatedEvent)
         {
             _cells = onCellsGridCreatedEvent.CellsGrid.Cells;
+        }
+
+        private void MoveSelector(Cell cell)
+        {
+            _highlightedCell?.SetSelector(false);
+            _highlightedCell = cell;
+            _highlightedCell.SetSelector(true);
+        }
+
+        private void ResetSelector()
+        {
+            _highlightedCell.SetSelector(false);
+            _highlightedCell = null;
         }
         
         private void HighlightEmptyCells()
@@ -88,16 +90,6 @@ namespace GamePlayServices
             {
                 cell.SetSelector(false);
             }
-        }
-        
-        private void PrepareForBuild(OnStartBuildingCellEvent onStartBuildingCellEvent)
-        {
-            _buildData = _staticData.ForCell(onStartBuildingCellEvent.CellType);
-        }
-        
-        private void ClearCellForBuild()
-        {
-            _buildData = null;
         }
     }
 }
