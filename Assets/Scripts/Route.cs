@@ -5,21 +5,18 @@ using Properties;
 
 public class Route
 {
-    private List<Cell> _cells;
-    private Property<int> _miningPerSecond;
+    private readonly List<Cell> _cells;
     private bool _isReady;
 
     public Route(Cell firstCell)
     {
         _cells = new();
-        _miningPerSecond = new Property<int>(0);
         _isReady = false;
 
         _cells.Add(firstCell);
     }
 
     public List<Cell> Cells {  get { return _cells; } }
-    public Property<int> MiningPerSecond { get { return _miningPerSecond; } }
     public Cell First {  get { return _cells.First(); } }
     public Cell Last {  get { return _cells.Last(); } }
     public bool IsReady { get { return _isReady; } }

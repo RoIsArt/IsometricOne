@@ -53,6 +53,7 @@ namespace GamePlayServices
             if(_planedCell == null) return;
             
             _cellFactory.Create(_buildData.Type, _planedCell.Index);
+            _eventBus.Invoke(new OnCellBuildedEvent(_buildData.Type));
             CompleteBulding();
         }
 
