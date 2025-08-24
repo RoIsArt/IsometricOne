@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Cells;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace DatasAndConfigs
 {
@@ -10,7 +11,7 @@ namespace DatasAndConfigs
         public CellType Type;
         public GameObject Prefab;
         public Sprite BaseSprite;
-        public List<ConnectingSide> ConnectingSides;
+        [FormerlySerializedAs("ConnectingSides")] public List<SideName> Sides;
         public int MinePerSecond;
     }
 }

@@ -32,9 +32,9 @@ namespace Infrastructure.Factories
         {
             GridConfig config = _staticDataService.ForGrid();
             GameObject grid = CreateGrid(config);
-            Vector2Int sourcePosition = GetSourcePosition(config);
 
-            InitializeGrid(config, sourcePosition);
+
+
 
             Vector3 gridPos = grid.transform.position;
             gridPos.y += config.Shift.y;
@@ -47,10 +47,10 @@ namespace Infrastructure.Factories
         {
             GameObject gridObj = _assetProvider.Instantiate(AssetPath.GridPath);
             CellsGrid cellsGrid = gridObj.GetComponent<CellsGrid>();
-            cellsGrid.Construct(config);
+            Vector2Int sourcePosition = GetSourcePosition(config);
+            cellsGrid.Construct(config, sourcePosition);
             _cellFactory.SetGrid(cellsGrid);
-            
-            
+            InitializeGrid(config, sourcePosition);
             
             _eventBus.Invoke(new OnCellsGridCreatedEvent(cellsGrid));
             return gridObj;

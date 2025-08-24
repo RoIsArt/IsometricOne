@@ -7,6 +7,6 @@ namespace GamePlayServices
     {
         void Mine();
         void Initialize(Cell[,] cells);
-        void Refresh();
+        void AddRoute(Route route);
     }
 }

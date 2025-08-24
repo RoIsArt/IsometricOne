@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using Cells;
 using GameEvents;
 using Infrastructure.Services;
+using UnityEditor.Search;
 
 namespace GamePlayServices
 {
@@ -11,12 +13,13 @@ namespace GamePlayServices
         private Cell[,] _cells;
         private int _totalCount;
         private int _minePerSecond;
-
+        private readonly List<Route> _routes;
 
         [Inject]
         public Miner(IEventBus eventBus)
         {
             _eventBus = eventBus;
+            _routes = new List<Route>();
         }
         
         public void Initialize(Cell[,] cells)
@@ -34,15 +37,20 @@ namespace GamePlayServices
             }
         }
 
-        public void Refresh()
+        public void AddRoute(Route route)
+        {
+            _routes.Add(route);
+            Refresh();
+        }
+
+        private void Refresh()
         {
             _minePerSecond = 0;
-        
-            foreach (Cell cell in _cells)
+            foreach (Route route in _routes)
             {
-                if (cell)
+                foreach (Cell routeCell in route.Cells)
                 {
-                    _minePerSecond += cell.MinePerSecond;
+                    _minePerSecond += routeCell.MinePerSecond;
                 }
             }
         }

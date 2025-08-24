@@ -15,9 +15,5 @@ MonoBehaviour:
   Type: 2
   Prefab: {fileID: 7867326642778994950, guid: 1db45288771a9d74f8a502ff541e33a6, type: 3}
   BaseSprite: {fileID: 21300000, guid: 8cffbfe0f70b95640ae588d7e8e94e82, type: 3}
-  ConnectingSides:
-  - sideName: 0
-    isConnected: 0
-  - sideName: 2
-    isConnected: 0
+  Sides: 0100000003000000
   MinePerSecond: 2

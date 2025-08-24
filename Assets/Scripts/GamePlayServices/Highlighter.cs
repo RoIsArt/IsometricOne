@@ -59,7 +59,7 @@ namespace GamePlayServices
         
         private void Initialize(OnCellsGridCreatedEvent onCellsGridCreatedEvent)
         {
-            _cells = onCellsGridCreatedEvent.CellsGrid.Cells;
+            _cells = onCellsGridCreatedEvent.CellsGrid.GetAllCell();
         }
 
         private void MoveSelector(Cell cell)

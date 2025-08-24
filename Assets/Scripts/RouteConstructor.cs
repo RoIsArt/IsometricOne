@@ -1,115 +1,115 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cells;
 using GameEvents;
+using GamePlayServices;
+using Infrastructure.Services;
 using UnityEngine;
+using UnityEngineInternal;
 
-public class RouteConstructor : IDisposable
+public class RouteConstructor : IRouteConstructor, IDisposable
 {
-    private readonly CellsGrid _cellsGrid;
-    private readonly Cell _sourceCell;
     private readonly IEventBus _eventBus;
+    private CellsGrid _cellsGrid;
+    private IMiner _miner;
     
-    public RouteConstructor(CellsGrid cellsGrid, IEventBus eventBus, Cell sourceCell)
+    [Inject]
+    public RouteConstructor(IEventBus eventBus, IMiner miner)
     {
         _eventBus = eventBus;
-        _sourceCell = sourceCell;
-        _cellsGrid = cellsGrid;
+        _miner = miner;
 
-        _eventBus.Subscribe<OnCellBuildedEvent>(TryCreateRoute);
+        _eventBus.Subscribe<OnCellsGridCreatedEvent>(SetGrid);
+        _eventBus.Subscribe<OnCellBuildedEvent>(CheckConnection);
     }
 
-    public void TryCreateRoute(OnCellBuildedEvent onCellBuildedEvent)
+    private void SetGrid(OnCellsGridCreatedEvent onCellsGridCreatedEvent)
+    {
+        _cellsGrid = onCellsGridCreatedEvent.CellsGrid;
+    }
+
+    public void CheckConnection(OnCellBuildedEvent onCellBuildedEvent)
     {
         if(!RouteConstants.ConnectableTypes.Contains(onCellBuildedEvent.CellType))
             return;
 
-        ConnectingSide unconnectedSide = GetUnconnectedSide(_sourceCell);
-        Cell cellForAttached = GetNextCellForAttach(unconnectedSide);
-        bool isCanAttached = cellForAttached && 
-                             RouteConstants.ConnectableTypes.Contains(cellForAttached.Type);
-        if(isCanAttached)
-            TryAttachedCell(_sourceCell, cellForAttached, unconnectedSide);
+
+
+        foreach (SideName side in RouteConstants.Sides)
+        {
+            if(_cellsGrid.SourceCell.Connecter.Sides[side] != null) continue;
+            
+            List<Cell> route = new List<Cell>();
+            bool routeIsReady = CheckRouteReady(route, _cellsGrid.SourceCell, side);
+            if (routeIsReady) 
+                CreateRoute(route);
+        }
     }
+
+    private bool CheckRouteReady(List<Cell> route, Cell currentCell, SideName unconnectedSide)
+    {
+        if (route.Count > 1 && route.First() == currentCell)
+            return true;
+        else
+            route.Add(currentCell);
+
+        
+        Vector2Int index = currentCell.Index + RouteConstants.Offsets[unconnectedSide];
+        Cell nextCell = _cellsGrid.GetCell(index);
+        if (nextCell && RouteConstants.ConnectableTypes.Contains(nextCell.Type) 
+                     && CheckOppositeSideInCell(nextCell, unconnectedSide, out SideName oppositeSide))
+        {
+
+            SideName nextSide = nextCell.Connecter.Sides.Keys.FirstOrDefault(side => side != oppositeSide);
+            return CheckRouteReady(route, nextCell, nextSide);
+        }
+        else
+            return false;
+    }
+
+    private void ConnectCells(List<Cell> cells)
+    {
+        Cell currentCell, nextCell;
+        for (int i = 0; i < cells.Count; i++)
+        {
+            currentCell = cells[i];
+            nextCell = cells[(i + 1) % cells.Count];
+            Vector2Int offset = nextCell.Index - currentCell.Index;
+            SideName unconnectedSide = RouteConstants.Offsets.First(x => x.Value == offset).Key;
+            currentCell.Connecter.Connect(unconnectedSide, nextCell);
+            nextCell.Connecter.Connect(RouteConstants.OppositeSides[unconnectedSide], currentCell);
+        }
+
+    }
+
+    private void CreateRoute(List<Cell> route)
+    {
+        ConnectCells(route);
+        Route newRoute = new Route(route);
+        _miner.AddRoute(newRoute);
+    }
+
+    private bool CheckOppositeSideInCell(Cell nextCell, SideName unconnectedSide, out SideName oppositeSide)
+    {
+        bool contain = nextCell.Connecter.ContainSide(RouteConstants.OppositeSides[unconnectedSide]);
+        if (contain)
+        {
+            oppositeSide = RouteConstants.OppositeSides[unconnectedSide];
+            return true;
+        }
+        else
+        {
+            oppositeSide = SideName.Not;
+            return false;
+        }
+    }
+
+    
 
     public void Dispose()
     {
-        _eventBus.Unsubscribe<OnCellBuildedEvent>(TryCreateRoute);
-    }
-
-    private ConnectingSide GetUnconnectedSide(Cell cell)
-    {
-        return cell.GetUnconnetSide();
-    }
-
-    private Cell GetNextCellForAttach(ConnectingSide connectingSide)
-    {
-        Vector2Int nextCellIndex = _sourceCell.Index + RouteConstants.Offsets[connectingSide.SideName];
-        return _cellsGrid.GetCell(nextCellIndex);
-    }
-
-    private void TryAttachedCell(Cell to, Cell cellForAttached, ConnectingSide connectingSide)
-    {
-        var oppositeSide = RouteConstants.OppositeSides[connectingSide.SideName];
-
-        if (cellForAttached.ContainSide(oppositeSide))
-        {
-            Attach(to, cellForAttached, connectingSide);
-
-            var nextSide = GetUnconnectedSide(cellForAttached);
-            var nextCellForAttached = GetNextCellForAttach(nextSide);
-            if (nextCellForAttached)
-            {
-                if (!CheckReadyRoute(nextCellForAttached)) 
-                    TryAttachedCell(cellForAttached, nextCellForAttached, nextSide);                    
-            }
-        }
-    }
-
-    private void Attach(Cell to, Cell cell, ConnectingSide connectSide)
-    {
-        to.GetConnectingSide(connectSide.SideName).Connect();
-        cell.GetConnectingSide(RouteConstants.OppositeSides[connectSide.SideName]).Connect();
-    }
-
-    private bool CheckReadyRoute(Cell cellForAttached)
-    {
-        if (cellForAttached == _sourceCell)
-        {
-            return true;
-        }
-
-        return false;
+        _eventBus.Unsubscribe<OnCellsGridCreatedEvent>(SetGrid);
+        _eventBus.Unsubscribe<OnCellBuildedEvent>(CheckConnection);
     }
 }
-
-public static class RouteConstants
-{
-    public static readonly Dictionary<SideName, SideName> OppositeSides = new ()
-    {
-        { SideName.North, SideName.South },
-        { SideName.East, SideName.West },
-        { SideName.West, SideName.East },
-        { SideName.South, SideName.North }
-    };
-
-    public static readonly Dictionary<SideName, Vector2Int> Offsets = new ()
-    {
-        {SideName.North, new Vector2Int(1, 0)},
-        {SideName.East, new Vector2Int(0, -1)},
-        {SideName.West, new Vector2Int(0, 1)},
-        {SideName.South, new Vector2Int(-1, 0)}
-    };
-
-    public static readonly List<CellType> ConnectableTypes = new()
-    {
-        CellType.Source,
-        CellType.RoadNe,
-        CellType.RoadNs,
-        CellType.RoadSe,
-        CellType.RoadWe,
-        CellType.RoadWn,
-        CellType.RoadWs
-    };
-}
-

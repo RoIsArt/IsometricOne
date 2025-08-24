@@ -35,6 +35,7 @@ namespace Infrastructure.SceneManagment
             _container.RegisterScene<IHighlighter, Highlighter>(Lifecycle.Singleton);
             _container.RegisterScene<IBuilder, Builder>(Lifecycle.Singleton);
             _container.RegisterScene<IMiner, Miner>(Lifecycle.Singleton);
+            _container.RegisterScene<IRouteConstructor, RouteConstructor>(Lifecycle.Singleton);
         }
 
         private void InitGameWorld()

@@ -19,7 +19,6 @@ namespace GroundState
         public void Enter()
         {
             _miner.Initialize(_cells);
-            _miner.Refresh();
         }
 
         public void Update()
