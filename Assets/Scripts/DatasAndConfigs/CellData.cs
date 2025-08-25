@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Animation;
 using Cells;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -11,7 +12,9 @@ namespace DatasAndConfigs
         public CellType Type;
         public GameObject Prefab;
         public Sprite BaseSprite;
-        [FormerlySerializedAs("ConnectingSides")] public List<SideName> Sides;
+        public List<SideName> Sides;
         public int MinePerSecond;
+
+        public List<SpriteAnimationClip> Clips = new List<SpriteAnimationClip>();
     }
 }

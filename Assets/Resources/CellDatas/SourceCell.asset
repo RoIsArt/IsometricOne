@@ -17,3 +17,12 @@ MonoBehaviour:
   BaseSprite: {fileID: 21300000, guid: 5bf6079980e43fa40ba79388a495d610, type: 3}
   Sides: 01000000030000000200000004000000
   MinePerSecond: 1
+  Clips:
+  - _name: Idle
+    _sprites:
+    - {fileID: 21300000, guid: 5bf6079980e43fa40ba79388a495d610, type: 3}
+    _isLoop: 1
+  - _name: Connect
+    _sprites:
+    - {fileID: 21300000, guid: ee1c65ec02262924388098ca885341ef, type: 3}
+    _isLoop: 0

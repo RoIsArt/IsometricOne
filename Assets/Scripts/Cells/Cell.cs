@@ -1,3 +1,4 @@
+using Animation;
 using DatasAndConfigs;
 using GameEvents;
 using GamePlayServices;
@@ -7,6 +8,7 @@ namespace Cells
 {
     [RequireComponent(typeof(SpriteRenderer))]
     [RequireComponent(typeof(SelectorChanger))]
+    [RequireComponent(typeof(SpriteAnimator))]
 
     public class Cell : MonoBehaviour
     {
@@ -17,6 +19,7 @@ namespace Cells
         private SelectorChanger _selector;
         private CellMouseObserver _cellMouseObserver;
         private Connecter _connecter;
+        private SpriteAnimator _spriteAnimator;
 
         public void Construct(CellData data, Vector2Int index, IEventBus eventBus)
         {
@@ -26,7 +29,9 @@ namespace Cells
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _selector = GetComponent<SelectorChanger>();
             _cellMouseObserver = GetComponent<CellMouseObserver>();
+            _spriteAnimator = GetComponent<SpriteAnimator>();
             _cellMouseObserver.Construct(eventBus, this);
+            _spriteAnimator.Construct(eventBus, data);
             _connecter = new Connecter(data);
         }
 
@@ -34,6 +39,7 @@ namespace Cells
         public int MinePerSecond => _data.MinePerSecond;
         public CellType Type => _data.Type;
         public Connecter Connecter => _connecter;
+        public SpriteAnimator SpriteAnimator => _spriteAnimator;
 
         public void SetSprite(Sprite sprite) =>
             _spriteRenderer.sprite = sprite;

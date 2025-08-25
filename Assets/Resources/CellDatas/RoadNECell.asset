@@ -16,4 +16,13 @@ MonoBehaviour:
   Prefab: {fileID: 7867326642778994950, guid: 1db45288771a9d74f8a502ff541e33a6, type: 3}
   BaseSprite: {fileID: 21300000, guid: 8cffbfe0f70b95640ae588d7e8e94e82, type: 3}
   Sides: 0100000003000000
-  MinePerSecond: 2
+  MinePerSecond: 1
+  Clips:
+  - _name: Idle
+    _sprites:
+    - {fileID: 21300000, guid: 8cffbfe0f70b95640ae588d7e8e94e82, type: 3}
+    _isLoop: 1
+  - _name: Connect
+    _sprites:
+    - {fileID: 21300000, guid: abdcf382882d0d44dbf5091b041595be, type: 3}
+    _isLoop: 0

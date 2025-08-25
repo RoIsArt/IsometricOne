@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using Cells;
 using GameEvents;
-using GamePlayServices;
 using Infrastructure.Services;
 using UnityEngine;
-using UnityEngineInternal;
 
 public class RouteConstructor : IRouteConstructor, IDisposable
 {
     private readonly IEventBus _eventBus;
+    private readonly IRouteFactory _routeFactory;
     private CellsGrid _cellsGrid;
-    private IMiner _miner;
-    
+
+
     [Inject]
-    public RouteConstructor(IEventBus eventBus, IMiner miner)
+    public RouteConstructor(IEventBus eventBus, IRouteFactory routeFactory)
     {
         _eventBus = eventBus;
-        _miner = miner;
+        _routeFactory = routeFactory;
 
         _eventBus.Subscribe<OnCellsGridCreatedEvent>(SetGrid);
         _eventBus.Subscribe<OnCellBuildedEvent>(CheckConnection);
@@ -43,7 +42,7 @@ public class RouteConstructor : IRouteConstructor, IDisposable
             List<Cell> route = new List<Cell>();
             bool routeIsReady = CheckRouteReady(route, _cellsGrid.SourceCell, side);
             if (routeIsReady) 
-                CreateRoute(route);
+                _routeFactory.CreateRoute(route);
         }
     }
 
@@ -68,27 +67,9 @@ public class RouteConstructor : IRouteConstructor, IDisposable
             return false;
     }
 
-    private void ConnectCells(List<Cell> cells)
-    {
-        Cell currentCell, nextCell;
-        for (int i = 0; i < cells.Count; i++)
-        {
-            currentCell = cells[i];
-            nextCell = cells[(i + 1) % cells.Count];
-            Vector2Int offset = nextCell.Index - currentCell.Index;
-            SideName unconnectedSide = RouteConstants.Offsets.First(x => x.Value == offset).Key;
-            currentCell.Connecter.Connect(unconnectedSide, nextCell);
-            nextCell.Connecter.Connect(RouteConstants.OppositeSides[unconnectedSide], currentCell);
-        }
+    
 
-    }
-
-    private void CreateRoute(List<Cell> route)
-    {
-        ConnectCells(route);
-        Route newRoute = new Route(route);
-        _miner.AddRoute(newRoute);
-    }
+    
 
     private bool CheckOppositeSideInCell(Cell nextCell, SideName unconnectedSide, out SideName oppositeSide)
     {

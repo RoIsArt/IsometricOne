@@ -74,7 +74,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -962498507
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 7e4cd8520bb721a40a1c1ced9d80109e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -101,6 +101,7 @@ GameObject:
   - component: {fileID: 1105455959324217214}
   - component: {fileID: 4166621191333528617}
   - component: {fileID: 3168524808430016002}
+  - component: {fileID: -4126708322463125535}
   m_Layer: 0
   m_Name: RoadWECell
   m_TagString: Untagged
@@ -166,7 +167,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -962498507
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: bbbf038561f721640a8371d512f8b075, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -267,3 +268,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 480739ad5948a5a4ebc4a2ca11c69f50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-4126708322463125535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053992014617738443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a00574312d785b4a883d4d13cbcbbd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _framePerSecond: 1

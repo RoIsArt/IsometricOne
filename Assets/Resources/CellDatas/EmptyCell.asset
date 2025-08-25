@@ -17,3 +17,8 @@ MonoBehaviour:
   BaseSprite: {fileID: 0}
   Sides: 
   MinePerSecond: 0
+  Clips:
+  - _name: Idle
+    _sprites:
+    - {fileID: 0}
+    _isLoop: 1

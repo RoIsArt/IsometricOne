@@ -5,7 +5,7 @@ using Properties;
 
 public class Route
 {
-    private readonly List<Cell> _cells;
+    private List<Cell> _cells;
 
     public Route(List<Cell> cells)
     {
@@ -13,9 +13,4 @@ public class Route
     }
 
     public List<Cell> Cells => _cells;
-
-    public void Add(Cell cell)
-    {
-        _cells.Add(cell);
-    }
 }
