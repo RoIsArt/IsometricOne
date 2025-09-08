@@ -12,17 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24f3416a4631a764099d27efde387b2d, type: 3}
   m_Name: RoadNECell
   m_EditorClassIdentifier: 
-  Type: 2
-  Prefab: {fileID: 7867326642778994950, guid: 1db45288771a9d74f8a502ff541e33a6, type: 3}
-  BaseSprite: {fileID: 21300000, guid: 8cffbfe0f70b95640ae588d7e8e94e82, type: 3}
-  Sides: 0100000003000000
-  MinePerSecond: 1
-  Clips:
-  - _name: Idle
-    _sprites:
-    - {fileID: 21300000, guid: 8cffbfe0f70b95640ae588d7e8e94e82, type: 3}
-    _isLoop: 1
-  - _name: Connect
-    _sprites:
-    - {fileID: 21300000, guid: abdcf382882d0d44dbf5091b041595be, type: 3}
-    _isLoop: 0
+  type: 2
+  prefab: {fileID: 7867326642778994950, guid: 1db45288771a9d74f8a502ff541e33a6, type: 3}
+  baseSprite: {fileID: 21300000, guid: 8cffbfe0f70b95640ae588d7e8e94e82, type: 3}
+  minePerSecond: 1

@@ -45,7 +45,7 @@ namespace Cells
         }
         
         public Cell GetCell(Vector2Int index) => 
-            IsIndexValid(index) ? null : _cells[index.x, index.y];
+            IsIndexValid(index) ? _cells[index.x, index.y] : null;
 
         private bool IsIndexValid(Vector2Int index) =>
             index.x >= 0 && index.x < Width && 

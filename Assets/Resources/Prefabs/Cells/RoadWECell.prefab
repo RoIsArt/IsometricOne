@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 1105455959324217214}
   - component: {fileID: 4166621191333528617}
   - component: {fileID: 3168524808430016002}
-  - component: {fileID: -4126708322463125535}
+  - component: {fileID: 1507926888043571603}
   m_Layer: 0
   m_Name: RoadWECell
   m_TagString: Untagged
@@ -268,16 +268,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 480739ad5948a5a4ebc4a2ca11c69f50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-4126708322463125535
-MonoBehaviour:
+--- !u!95 &1507926888043571603
+Animator:
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1053992014617738443}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a00574312d785b4a883d4d13cbcbbd1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  framePerSecond: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

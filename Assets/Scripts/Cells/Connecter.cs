@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using DatasAndConfigs;
-using NUnit.Framework;
 using UnityEngine;
 
 namespace Cells
 {
     public class Connecter
     {
-        private Cell _cell;
+        private readonly Cell _cell;
        
         public Connecter(CellData data, Cell thisCell)
         {

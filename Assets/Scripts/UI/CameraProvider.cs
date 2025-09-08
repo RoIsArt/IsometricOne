@@ -5,7 +5,7 @@ namespace UI
 {
     public class CameraProvider : MonoBehaviour
     {
-        [FormerlySerializedAs("_canvas")] [SerializeField] private Canvas canvas;
+        [SerializeField] private Canvas canvas;
 
         private void Awake()
         {

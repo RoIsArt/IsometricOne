@@ -12,16 +12,23 @@ namespace CameraManagment
         [Header("Camera Bounds")]
         [SerializeField] private Vector2 minBounds;
         [SerializeField] private Vector2 maxBounds;
-
+        
+        private Camera _camera;
         private Vector3 _targetPosition;
         private Vector3 _currentVelocity; 
+        private float _zoomVelocity;
 
+        private void Awake()
+        {
+            _camera = GetComponent<Camera>();
+        }
+        
         private void Start()
         {
             _targetPosition = transform.position;
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             HandleInput();
             ApplyMovement();
@@ -55,17 +62,12 @@ namespace CameraManagment
 
         private void ClampPosition()
         {
-            _targetPosition.x = Mathf.Clamp(_targetPosition.x, minBounds.x, maxBounds.x);
-            _targetPosition.y = Mathf.Clamp(_targetPosition.y, minBounds.y, maxBounds.y);
+            float cameraHeight = _camera.orthographicSize;
+            float cameraWidth = cameraHeight * _camera.aspect;
+            
+            _targetPosition.x = Mathf.Clamp(_targetPosition.x, minBounds.x + cameraWidth, maxBounds.x - cameraWidth);
+            _targetPosition.y = Mathf.Clamp(_targetPosition.y, minBounds.y + cameraHeight, maxBounds.y - cameraHeight);
         }
         
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireCube(
-                new Vector3((minBounds.x + maxBounds.x) * 0.5f, (minBounds.y + maxBounds.y) * 0.5f, 0f),
-                new Vector3(maxBounds.x - minBounds.x, maxBounds.y - minBounds.y, 1f)
-            );
-        }
     }
 }

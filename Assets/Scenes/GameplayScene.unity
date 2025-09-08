@@ -247,8 +247,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 200
   smoothingFactor: 5
-  minBounds: {x: -351, y: -171}
-  maxBounds: {x: 351, y: 171}
+  minBounds: {x: -500, y: -250}
+  maxBounds: {x: 500, y: 250}
 --- !u!1001 &1987643665
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -29,55 +29,62 @@ public class RouteConstructor : IRouteConstructor, IDisposable
     {
         if(!onCellBuildedEvent.CellType.IsConnectable())
             return;
-        
-        
-        foreach (KeyValuePair<SideName, Cell> side in _cellsGrid.SourceCell.Connecter.Sides)
+
+        List<SideName> sides = _cellsGrid.SourceCell.Connecter.Sides.Keys.ToList();
+        foreach (SideName side in sides)
         {
-            if(side.Value != null) 
+            if(_cellsGrid.SourceCell.Connecter.Sides[side] != null) 
                 continue;
             
             List<Cell> route = new List<Cell>();
-            bool routeIsReady = CheckRouteReady(route, _cellsGrid.SourceCell, side.Key);
+            bool routeIsReady = CheckRouteReady(route, _cellsGrid.SourceCell, side);
             if (!routeIsReady) continue;
-            route.Reverse();
             _routeFactory.CreateRoute(route);
         }
     }
 
     private bool CheckRouteReady(List<Cell> route, Cell currentCell, SideName unconnectedSide)
     {
-        if (route.Count > 1 && route.First() == currentCell)
+        if (route.Count > 1 && route[0] == currentCell)
             return true;
-        else
-            route.Add(currentCell);
-
+        
+        route.Add(currentCell);
         
         Vector2Int index = currentCell.Index + unconnectedSide.ToDirection();
         Cell nextCell = _cellsGrid.GetCell(index);
-        if (nextCell && nextCell.Type.IsConnectable()
-                     && CheckOppositeSideInCell(nextCell, unconnectedSide, out SideName oppositeSide))
+        if (IsCellMayConnect(unconnectedSide, nextCell, out SideName oppositeSide))
         {
-
-            SideName nextSide = nextCell.Connecter.Sides.Keys.FirstOrDefault(side => side != oppositeSide);
-            return CheckRouteReady(route, nextCell, nextSide);
+            SideName nextSide = FindNextSide(nextCell, oppositeSide);
+            if (nextSide != SideName.None)
+                return CheckRouteReady(route, nextCell, nextSide);
         }
-        else
-            return false;
+        
+        return false;
+    }
+
+    private SideName FindNextSide(Cell nextCell, SideName oppositeSide)
+    {
+        foreach (SideName sideName in nextCell.Connecter.Sides.Keys)
+        {
+            if (sideName != oppositeSide && nextCell.Connecter.Sides[sideName] == null)
+                return sideName;
+        }
+
+        return SideName.None;
+    }
+
+    private bool IsCellMayConnect(SideName unconnectedSide, Cell nextCell, out SideName oppositeSide)
+    {
+        oppositeSide = SideName.None;
+        return nextCell && 
+               nextCell.Type.IsConnectable() && 
+               CheckOppositeSideInCell(nextCell, unconnectedSide, out oppositeSide);
     }
 
     private bool CheckOppositeSideInCell(Cell nextCell, SideName unconnectedSide, out SideName oppositeSide)
     {
-        bool contain = nextCell.Connecter.ContainSide(unconnectedSide.GetOpposite());
-        if (contain)
-        {
-            oppositeSide = unconnectedSide.GetOpposite();
-            return true;
-        }
-        else
-        {
-            oppositeSide = SideName.None;
-            return false;
-        }
+        oppositeSide = unconnectedSide.GetOpposite();
+        return nextCell.Connecter.ContainSide(oppositeSide);
     }
     
     public void Dispose()

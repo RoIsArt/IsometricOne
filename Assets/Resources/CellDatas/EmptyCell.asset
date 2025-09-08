@@ -12,13 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24f3416a4631a764099d27efde387b2d, type: 3}
   m_Name: EmptyCell
   m_EditorClassIdentifier: 
-  Type: 0
-  Prefab: {fileID: 6065105261657163829, guid: d10be30e0c1f8e3468cd658888fa9f83, type: 3}
-  BaseSprite: {fileID: 0}
-  Sides: 
-  MinePerSecond: 0
-  Clips:
-  - _name: Idle
-    _sprites:
-    - {fileID: 0}
-    _isLoop: 1
+  type: 0
+  prefab: {fileID: 6065105261657163829, guid: d10be30e0c1f8e3468cd658888fa9f83, type: 3}
+  baseSprite: {fileID: 0}
+  minePerSecond: 0
