@@ -8,9 +8,7 @@
         
         private static readonly string SceneBootstrapperPath = "SceneBootstrappers";
 
-        public static string GetSceneBootstrapperPath(string sceneName)
-        {
-            return SceneBootstrapperPath + $"/{sceneName}Bootstrapper";
-        }
+        public static string GetSceneBootstrapperPath(string sceneName) => 
+            $"{SceneBootstrapperPath}/{sceneName}Bootstrapper";
     }
 }

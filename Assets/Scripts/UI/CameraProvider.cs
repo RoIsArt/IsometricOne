@@ -1,14 +1,15 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UI
 {
     public class CameraProvider : MonoBehaviour
     {
-        [SerializeField] private Canvas _canvas;
+        [FormerlySerializedAs("_canvas")] [SerializeField] private Canvas canvas;
 
         private void Awake()
         {
-            _canvas.worldCamera = Camera.main;
+            canvas.worldCamera = Camera.main;
         }
     }
 }

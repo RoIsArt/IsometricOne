@@ -1,4 +1,3 @@
-using Animation;
 using DatasAndConfigs;
 using GameEvents;
 using GamePlayServices;
@@ -7,47 +6,41 @@ using UnityEngine;
 namespace Cells
 {
     [RequireComponent(typeof(SpriteRenderer))]
-    [RequireComponent(typeof(SelectorChanger))]
-    [RequireComponent(typeof(SpriteAnimator))]
+    [RequireComponent(typeof(Selector))]
+    [RequireComponent(typeof(CellMouseObserver))]
 
     public class Cell : MonoBehaviour
     {
-        public IEventBus EventBus;
-        
         private CellData _data;
         private SpriteRenderer _spriteRenderer;
-        private SelectorChanger _selector;
         private CellMouseObserver _cellMouseObserver;
-        private Connecter _connecter;
-        private SpriteAnimator _spriteAnimator;
 
         public void Construct(CellData data, Vector2Int index, IEventBus eventBus)
         {
             _data = data;
             Index = index;
-            EventBus = eventBus;
+            
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            _selector = GetComponent<SelectorChanger>();
+            Selector = GetComponent<Selector>();
             _cellMouseObserver = GetComponent<CellMouseObserver>();
-            _spriteAnimator = GetComponent<SpriteAnimator>();
+            
             _cellMouseObserver.Construct(eventBus, this);
-            _spriteAnimator.Construct(eventBus, data);
-            _connecter = new Connecter(data);
+            Connecter = new Connecter(data, this);
+            
+            SetBaseSprite();
         }
 
+        public Selector Selector { get; private set; }
         public Vector2Int Index { get; private set; }
-        public int MinePerSecond => _data.MinePerSecond;
-        public CellType Type => _data.Type;
-        public Connecter Connecter => _connecter;
-        public SpriteAnimator SpriteAnimator => _spriteAnimator;
+        public Connecter Connecter { get; private set; }
+        public int MinePerSecond => _data.minePerSecond;
+        public CellType Type => _data.type;
+
 
         public void SetSprite(Sprite sprite) =>
             _spriteRenderer.sprite = sprite;
 
         public void SetBaseSprite() =>
-            SetSprite(_data.BaseSprite);
-
-        public void SetSelector(bool activity) =>
-            _selector.SetActive(activity);
+            SetSprite(_data.baseSprite);
     }
 }

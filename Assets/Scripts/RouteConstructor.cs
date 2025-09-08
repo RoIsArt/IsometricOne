@@ -12,7 +12,6 @@ public class RouteConstructor : IRouteConstructor, IDisposable
     private readonly IRouteFactory _routeFactory;
     private CellsGrid _cellsGrid;
 
-
     [Inject]
     public RouteConstructor(IEventBus eventBus, IRouteFactory routeFactory)
     {
@@ -23,26 +22,25 @@ public class RouteConstructor : IRouteConstructor, IDisposable
         _eventBus.Subscribe<OnCellBuildedEvent>(CheckConnection);
     }
 
-    private void SetGrid(OnCellsGridCreatedEvent onCellsGridCreatedEvent)
-    {
+    private void SetGrid(OnCellsGridCreatedEvent onCellsGridCreatedEvent) => 
         _cellsGrid = onCellsGridCreatedEvent.CellsGrid;
-    }
 
     public void CheckConnection(OnCellBuildedEvent onCellBuildedEvent)
     {
-        if(!RouteConstants.ConnectableTypes.Contains(onCellBuildedEvent.CellType))
+        if(!onCellBuildedEvent.CellType.IsConnectable())
             return;
-
-
-
-        foreach (SideName side in RouteConstants.Sides)
+        
+        
+        foreach (KeyValuePair<SideName, Cell> side in _cellsGrid.SourceCell.Connecter.Sides)
         {
-            if(_cellsGrid.SourceCell.Connecter.Sides[side] != null) continue;
+            if(side.Value != null) 
+                continue;
             
             List<Cell> route = new List<Cell>();
-            bool routeIsReady = CheckRouteReady(route, _cellsGrid.SourceCell, side);
-            if (routeIsReady) 
-                _routeFactory.CreateRoute(route);
+            bool routeIsReady = CheckRouteReady(route, _cellsGrid.SourceCell, side.Key);
+            if (!routeIsReady) continue;
+            route.Reverse();
+            _routeFactory.CreateRoute(route);
         }
     }
 
@@ -54,9 +52,9 @@ public class RouteConstructor : IRouteConstructor, IDisposable
             route.Add(currentCell);
 
         
-        Vector2Int index = currentCell.Index + RouteConstants.Offsets[unconnectedSide];
+        Vector2Int index = currentCell.Index + unconnectedSide.ToDirection();
         Cell nextCell = _cellsGrid.GetCell(index);
-        if (nextCell && RouteConstants.ConnectableTypes.Contains(nextCell.Type) 
+        if (nextCell && nextCell.Type.IsConnectable()
                      && CheckOppositeSideInCell(nextCell, unconnectedSide, out SideName oppositeSide))
         {
 
@@ -67,27 +65,21 @@ public class RouteConstructor : IRouteConstructor, IDisposable
             return false;
     }
 
-    
-
-    
-
     private bool CheckOppositeSideInCell(Cell nextCell, SideName unconnectedSide, out SideName oppositeSide)
     {
-        bool contain = nextCell.Connecter.ContainSide(RouteConstants.OppositeSides[unconnectedSide]);
+        bool contain = nextCell.Connecter.ContainSide(unconnectedSide.GetOpposite());
         if (contain)
         {
-            oppositeSide = RouteConstants.OppositeSides[unconnectedSide];
+            oppositeSide = unconnectedSide.GetOpposite();
             return true;
         }
         else
         {
-            oppositeSide = SideName.Not;
+            oppositeSide = SideName.None;
             return false;
         }
     }
-
     
-
     public void Dispose()
     {
         _eventBus.Unsubscribe<OnCellsGridCreatedEvent>(SetGrid);

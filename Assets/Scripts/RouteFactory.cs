@@ -25,19 +25,13 @@ public class RouteFactory : IRouteFactory
         _miner.AddRoute(newRoute);
     }
         
-    private static void ConnectCells(List<Cell> cells)
+    private void ConnectCells(List<Cell> cells)
     {
         for (int i = 0; i < cells.Count; i++)
         {
             Cell currentCell = cells[i];
             Cell nextCell = cells[(i + 1) % cells.Count];
-            Vector2Int offset = nextCell.Index - currentCell.Index;
-            SideName unconnectedSide = RouteConstants.Offsets
-                .First(x => x.Value == offset)
-                .Key;
-            currentCell.Connecter.Connect(unconnectedSide, nextCell);
-            nextCell.Connecter.Connect(RouteConstants.OppositeSides[unconnectedSide], currentCell);
-            currentCell.SpriteAnimator.SetClip("Connect");
+            currentCell.Connecter.ConnectBidirectional(nextCell);
         }
     }
 }

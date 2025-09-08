@@ -24,7 +24,7 @@ namespace GroundState
         {
             _highlighter.StartBuild();
         }
-
+        
         // ReSharper disable Unity.PerformanceAnalysis
         public void Update()
         {

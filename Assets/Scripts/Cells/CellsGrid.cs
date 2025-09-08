@@ -12,62 +12,49 @@ namespace Cells
         private Vector2Int _sourceCellPosition;
         private IUpdatableGridState _currentState;
 
-        public Cell SourceCell =>
-            GetCell(_sourceCellPosition);
+        public Cell[,] Cells => _cells;
+        public Cell SourceCell => GetCell(_sourceCellPosition);
+        public int Width => _config.gridSize.x;
+        public int Height => _config.gridSize.y;
 
         public void Construct(GridConfig config, Vector2Int sourceCellPosition)
         {
             _config = config;
-            _cells = new Cell[_config.GridSize.x, _config.GridSize.y];
+            _cells = new Cell[Width, Height];
             _sourceCellPosition = sourceCellPosition;
         }
 
-        private void Update()
-        {
-            _currentState?.Update();
-        }
-        
+        private void Update() => _currentState?.Update();
+
         public void SetState(IUpdatableGridState updatableGridState) => 
             _currentState = updatableGridState;
 
         public void AddCell(Cell cell)
         {
-            var index = cell.Index;
-            if (_cells[index.x, index.y] != null)
+            if (_cells[cell.Index.x, cell.Index.y] != null)
             {
-                var position = _cells[index.x, index.y].transform.position;
+                Vector3 position = _cells[cell.Index.x, cell.Index.y].transform.position;
                 cell.transform.position = position;
-                RemoveCell(_cells[index.x, index.y]);
+                RemoveCell(_cells[cell.Index.x, cell.Index.y]);
             }
             else
-                cell.transform.position = GetCellPosition(index);
+                cell.transform.position = GetCellPosition(cell.Index);
             
             cell.transform.parent = this.transform;
-            _cells[index.x, index.y] = cell;
+            _cells[cell.Index.x, cell.Index.y] = cell;
         }
-        public Cell GetCell(Vector2Int index)
-        {
-            if (index.x < 0 || index.x > _cells.GetLength(0) ||
-                index.y < 0 || index.y > _cells.GetLength(1))
-                return null;
-            
-            return _cells[index.x, index.y];
-        }
+        
+        public Cell GetCell(Vector2Int index) => 
+            IsIndexValid(index) ? null : _cells[index.x, index.y];
 
-        public Cell[,] GetAllCell()
-        {
-            return _cells;
-        }
+        private bool IsIndexValid(Vector2Int index) =>
+            index.x >= 0 && index.x < Width && 
+            index.y >= 0 && index.y < Height;
 
-        private void RemoveCell(Cell cell)
-        {
+        private void RemoveCell(Cell cell) => 
             Destroy(cell.gameObject);
-        }
 
-        private Vector2 GetCellPosition(Vector2Int index)
-        {
-            return index.x * _config.RightBasis + index.y * _config.LeftBasis;
-        }
-
+        private Vector2 GetCellPosition(Vector2Int index) => 
+            index.x * _config.RightBasis + index.y * _config.LeftBasis;
     }
 }

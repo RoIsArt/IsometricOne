@@ -59,19 +59,19 @@ namespace GamePlayServices
         
         private void Initialize(OnCellsGridCreatedEvent onCellsGridCreatedEvent)
         {
-            _cells = onCellsGridCreatedEvent.CellsGrid.GetAllCell();
+            _cells = onCellsGridCreatedEvent.CellsGrid.Cells;
         }
 
         private void MoveSelector(Cell cell)
         {
-            _highlightedCell?.SetSelector(false);
+            _highlightedCell?.Selector.Hide();
             _highlightedCell = cell;
-            _highlightedCell.SetSelector(true);
+            _highlightedCell.Selector.Show();
         }
 
         private void ResetSelector()
         {
-            _highlightedCell.SetSelector(false);
+            _highlightedCell.Selector.Hide();
             _highlightedCell = null;
         }
         
@@ -80,7 +80,7 @@ namespace GamePlayServices
             foreach (Cell cell in _cells)
             {
                 if(cell.Type == CellType.Empty)
-                    cell.SetSelector(true);
+                    cell.Selector.Show();
             }
         }
 
@@ -88,7 +88,7 @@ namespace GamePlayServices
         {
             foreach (Cell cell in _cells)
             {
-                cell.SetSelector(false);
+                cell.Selector.Hide();
             }
         }
     }

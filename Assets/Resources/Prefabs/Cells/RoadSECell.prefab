@@ -255,7 +255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d892a9ded7174c30948f3c0678b7634a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _selector: {fileID: 952684750328824110}
+  selector: {fileID: 952684750328824110}
 --- !u!114 &8554956506136773778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,4 +280,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a00574312d785b4a883d4d13cbcbbd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _framePerSecond: 1
+  framePerSecond: 1

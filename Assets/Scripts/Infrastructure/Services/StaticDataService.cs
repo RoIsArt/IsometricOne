@@ -18,7 +18,7 @@ namespace Infrastructure.Services
         }
 
         public void LoadCells() => 
-            _cells = Resources.LoadAll<CellData>("CellDatas").ToDictionary(x => x.Type);
+            _cells = Resources.LoadAll<CellData>("CellDatas").ToDictionary(x => x.type);
 
         public void LoadGrid() => 
             _gridConfig = Resources.Load<GridConfig>("GridConfig/GridConfig");

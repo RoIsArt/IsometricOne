@@ -59,15 +59,15 @@ namespace Infrastructure.Factories
         private static Vector2Int GetSourcePosition(GridConfig config)
         {
             return new Vector2Int(
-                Random.Range(1, config.GridSize.x - 1),
-                Random.Range(1, config.GridSize.y - 1));
+                Random.Range(1, config.gridSize.x - 1),
+                Random.Range(1, config.gridSize.y - 1));
         }
         
         private void InitializeGrid(GridConfig config, Vector2Int sourcePosition)
         {
-            for (int x = 0; x < config.GridSize.x; x++)
+            for (int x = 0; x < config.gridSize.x; x++)
             {
-                for (int y = 0; y < config.GridSize.y; y++)
+                for (int y = 0; y < config.gridSize.y; y++)
                 {
                     if (x == sourcePosition.x && y == sourcePosition.y)
                         _cellFactory.Create(CellType.Source, new Vector2Int(x, y));

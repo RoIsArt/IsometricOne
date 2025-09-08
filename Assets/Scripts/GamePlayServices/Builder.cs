@@ -52,8 +52,8 @@ namespace GamePlayServices
         {
             if(_planedCell == null) return;
             
-            _cellFactory.Create(_buildData.Type, _planedCell.Index); 
-            _eventBus.Invoke(new OnCellBuildedEvent(_buildData.Type));
+            _cellFactory.Create(_buildData.type, _planedCell.Index); 
+            _eventBus.Invoke(new OnCellBuildedEvent(_buildData.type));
             CompleteBulding();
         }
 
@@ -75,7 +75,7 @@ namespace GamePlayServices
         {
             _planedCell?.SetBaseSprite();
             _planedCell = pointedCell.Type == CellType.Empty ? pointedCell : null;
-            _planedCell?.SetSprite(_buildData.BaseSprite);
+            _planedCell?.SetSprite(_buildData.baseSprite);
         }
 
         private void ResetPlan()

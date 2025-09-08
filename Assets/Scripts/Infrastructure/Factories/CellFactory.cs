@@ -27,7 +27,7 @@ namespace Infrastructure.Factories
         public GameObject Create(CellType type, Vector2Int index)
         {
             CellData data = _staticDataService.ForCell(type);
-            GameObject cellObj = GameObject.Instantiate(data.Prefab);
+            GameObject cellObj = GameObject.Instantiate(data.prefab);
             Cell cell = cellObj.GetComponent<Cell>();
             
             cell.Construct(data, index, _eventBus);

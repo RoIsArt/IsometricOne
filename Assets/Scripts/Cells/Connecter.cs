@@ -1,43 +1,64 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DatasAndConfigs;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace Cells
 {
     public class Connecter
     {
-        private readonly Dictionary<SideName, Cell> _sides = new();
-        public Connecter(CellData data)
+        private Cell _cell;
+       
+        public Connecter(CellData data, Cell thisCell)
         {
-            foreach (SideName side in data.Sides)
-            {
-                _sides.Add(side, null);
-            }
+            _cell = thisCell;
+            
+            foreach (SideName side in data.type.GetSides()) 
+                Sides[side] = null;
         }
 
-        public Dictionary<SideName, Cell> Sides => _sides;
-        
-        public bool ContainSide(SideName sideName) => 
-            _sides.ContainsKey(sideName);
+        public Dictionary<SideName, Cell> Sides { get; } = new();
+        public bool ContainSide(SideName sideName) => Sides.ContainsKey(sideName);
 
         public void Connect(SideName sideName, Cell forConnect)
         {
             if (ContainSide(sideName))
-                _sides[sideName] = forConnect;
+                Sides[sideName] = forConnect;
         }
+        
+        public void ConnectBidirectional(Cell otherCell)
+        {
+            SideName sideName = GetSideFromCellToDirection(otherCell);
+            if (!ContainSide(sideName) || otherCell == null) return;
+            
+            Connect(sideName, otherCell);
+            
+            SideName? oppositeSide = sideName.GetOpposite();
+            if (otherCell.Connecter.ContainSide(oppositeSide.Value))
+            {
+                otherCell.Connecter.Connect(oppositeSide.Value, _cell);
+            }
+        }
+
+        private SideName GetSideFromCellToDirection(Cell to) => 
+            DirectionToCell(to).ToSide();
+
+        private Vector2Int DirectionToCell(Cell to) => 
+            to.Index - _cell.Index;
 
         public void Disconnect(SideName sideName)
         {
             if (ContainSide(sideName))
-                _sides[sideName] = null;
+                Sides[sideName] = null;
         }
 
         public void DisconnectAll()
         {
-            foreach (SideName key in _sides.Keys)
+            foreach (SideName key in Sides.Keys)
             {
-                _sides[key] = null;
+                Sides[key] = null;
             }
         }
     }
